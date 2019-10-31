@@ -1,18 +1,9 @@
-const { isString, isFinite, isArray } = require('lodash');
 const { IECore } = require('bindings')('InferenceEngineAddon');
 
 const ieCore = new IECore();
 
 const availableDevices = ieCore.getAvailableDevices();
 
-const mockMetricKey = 'MOCK_METRIC_KEY';
-const mockMetric = {
-    SUPPORTED_METRICS: [mockMetricKey],
-    [mockMetricKey]: 1,
-};
-
-// Mock function until bindings implemented
-ieCore.getMetric = (device, metricKey) => mockMetric[metricKey];
 
 console.log('Available devices:');
 for (device of availableDevices) {

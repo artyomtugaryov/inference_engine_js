@@ -13,7 +13,7 @@
         "$INTEL_OPENVINO_DIR/deployment_tools/inference_engine/lib/intel64/libinference_engine.so"
       ],
       "target_name": "InferenceEngineAddon",
-      "sources": [ "src/ie_core.cpp" ],
+      "sources": [ "src/ie_core.cpp", "src/common.cpp" ],
       'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ]
     }
   ]

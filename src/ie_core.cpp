@@ -2,7 +2,8 @@
 
 Napi::Object IECore::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "IECore", {
-        InstanceMethod("getAvailableDevices", &IECore::getAvailableDevices)
+        InstanceMethod("getAvailableDevices", &IECore::getAvailableDevices),
+        InstanceMethod("getMetric", &IECore::getMetric)
     });
 
     constructor = Napi::Persistent(func);
@@ -27,8 +28,18 @@ Napi::Value IECore::getAvailableDevices(const Napi::CallbackInfo &info) {
     for (int i = 0; i < size; i++) {
         Napi::String val = Napi::String::New(env, devices[i]);
         result[i] = val;
-      }
+    }
     return result;
+}
+
+
+Napi::Value IECore::getMetric(const Napi::CallbackInfo &info){
+
+    std::string device = std::string(info[0].ToString());
+    std::string metric = std::string(info[1].ToString());
+    InferenceEngine::Parameter parameter = this->_ie_core->GetMetric(device, metric);
+
+    return parseParameter(info.Env(), parameter);
 }
 
 Napi::Object Init (Napi::Env env, Napi::Object exports) {
