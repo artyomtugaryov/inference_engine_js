@@ -1,0 +1,13 @@
+# For IDEA
+.idea/
+VS/
+Xcode/
+temp/
+report/
+.kdev4/
+*.kdev4
+*.kate-swp
+
+node_modules/
+
+build/

@@ -1,0 +1,18 @@
+{
+  "name": "helloworld",
+  "version": "1.0.0",
+  "description": "",
+  "main": "sample.js",
+  "scripts": {
+    "sample": "node sample.js",
+    "build": "node-gyp rebuild"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "bindings": "^1.5.0",
+    "libxmljs": "^0.19.7",
+    "node-addon-api": "^1.7.1",
+    "node-gyp": "^6.0.0"
+  }
+}
