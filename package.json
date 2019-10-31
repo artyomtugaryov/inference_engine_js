@@ -2,6 +2,10 @@
   "name": "inference_engine_node_api",
   "version": "0.0.1",
   "description": "OpenVINO Inference Engine Node API addon",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/artyomtugaryov/inference_engine_node_api.git"
+  },
   "main": "sample.js",
   "scripts": {
     "build": "node-gyp rebuild",
