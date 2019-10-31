@@ -1,4 +1,4 @@
-# OpenVINO Inference Engine node API addon
+# OpenVINO Inference Engine Node API addon
 
 ## Prerequisites
     1. Installed OpenVINO package

@@ -1,11 +1,11 @@
 {
-  "name": "helloworld",
-  "version": "1.0.0",
-  "description": "",
+  "name": "inference_engine_node_api",
+  "version": "0.0.1",
+  "description": "OpenVINO Inference Engine Node API addon",
   "main": "sample.js",
   "scripts": {
-    "sample": "node sample.js",
-    "build": "node-gyp rebuild"
+    "build": "node-gyp rebuild",
+    "sample": "node sample.js"
   },
   "author": "",
   "license": "ISC",
