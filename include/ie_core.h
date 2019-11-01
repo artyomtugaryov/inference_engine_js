@@ -1,4 +1,6 @@
-#include <napi.h>
+#ifndef INFERENCE_ENGINE_ADDON_IE_CORE_H
+#define INFERENCE_ENGINE_ADDON_IE_CORE_H
+
 
 #include <ie_core.hpp>
 #include <vector>
@@ -19,4 +21,8 @@ class IECore : public Napi::ObjectWrap<IECore> {
         Napi::Value getAvailableDevices(const Napi::CallbackInfo &info);
 
         Napi::Value getMetric(const Napi::CallbackInfo &info);
+
+        void loadNetwork(const Napi::CallbackInfo &info);
 };
+
+#endif //INFERENCE_ENGINE_ADDON_IE_CORE_H

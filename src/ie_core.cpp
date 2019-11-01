@@ -42,6 +42,13 @@ Napi::Value IECore::getMetric(const Napi::CallbackInfo &info){
     return parseParameter(info.Env(), parameter);
 }
 
+void loadNetwork(const Napi::CallbackInfo &info){
+    std::string device = std::string(info[0].ToString());
+    std::string metric = std::string(info[1].ToString());
+
+}
+
+
 Napi::Object Init (Napi::Env env, Napi::Object exports) {
     IECore::Init(env, exports);
     return exports;
