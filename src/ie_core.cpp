@@ -47,11 +47,3 @@ void loadNetwork(const Napi::CallbackInfo &info){
     std::string metric = std::string(info[1].ToString());
 
 }
-
-
-Napi::Object Init (Napi::Env env, Napi::Object exports) {
-    IECore::Init(env, exports);
-    return exports;
-}
-
-NODE_API_MODULE(NODE_GYP_MODULE_NAME, Init)

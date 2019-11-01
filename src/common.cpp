@@ -67,7 +67,7 @@ Napi::Value parseParameter(const Napi::Env& env, const InferenceEngine::Paramete
         for (const auto &it : dict){
             auto obj = Napi::Object::New(env);
             obj.Set("name", it.first.c_str());
-            obj.Set("value",Napi::Number::New(env, static_cast<int>(it.second)));
+            obj.Set("value", Napi::Number::New(env, static_cast<int>(it.second)));
             result[i] = obj;
             i++;
         }

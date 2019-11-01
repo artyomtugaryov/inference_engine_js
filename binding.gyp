@@ -16,7 +16,8 @@
       "sources": [
         "src/ie_core.cpp",
         "src/common.cpp",
-        "src/ie_network.cpp"
+        "src/ie_network.cpp",
+        "src/init.cpp"
        ],
       'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ]
     }
