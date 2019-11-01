@@ -21,4 +21,5 @@ target_include_directories(${PROJECT_NAME} PRIVATE
         ${CMAKE_SOURCE_DIR}/node_modules/node-addon-api
         ${CMAKE_SOURCE_DIR}/node_modules/node-addon-api/src
         )
+
 target_link_libraries(${PROJECT_NAME} PRIVATE ${InferenceEngine_LIBRARIES})
