@@ -6,7 +6,8 @@
 #include <ie_core.hpp>
 #include <inference_engine.hpp>
 
-class IENetLayer : public Napi::ObjectWrap<IENetwork> {
+namespace InferenceEngineJS {
+    class IENetLayer : public Napi::ObjectWrap<IENetwork> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
@@ -20,6 +21,6 @@ class IENetLayer : public Napi::ObjectWrap<IENetwork> {
         static Napi::FunctionReference constructor;
 
         InferenceEngine::CNNNetwork _ie_network;
-};
-
+    };
+}
 #endif //INFERENCE_ENGINE_ADDON_IE_NETWORK_H

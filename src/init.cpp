@@ -4,8 +4,8 @@
 #include "ie_network.h"
 
 Napi::Object Init (Napi::Env env, Napi::Object exports) {
-    IECore::Init(env, exports);
-    IENetwork::Init(env, exports);
+    InferenceEngineJS::IECore::Init(env, exports);
+    InferenceEngineJS::IENetwork::Init(env, exports);
     return exports;
 }
 

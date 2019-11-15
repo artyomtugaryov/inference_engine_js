@@ -1,6 +1,6 @@
 #include "common.hpp"
 
-Napi::Value parseParameter(const Napi::Env& env, const InferenceEngine::Parameter &param) {
+Napi::Value InferenceEngineJS::parseParameter(const Napi::Env& env, const InferenceEngine::Parameter &param) {
     if (param.is<std::string>()) {
         return Napi::String::New(env, param.as<std::string>().c_str());
     }
@@ -23,41 +23,41 @@ Napi::Value parseParameter(const Napi::Env& env, const InferenceEngine::Paramete
 
     else if (param.is<std::vector<std::string>>()) {
         auto vec = param.as<std::vector<std::string>>();
-        return vector_to_napi_array<std::string, Napi::String >(env, vec);
+        return vectorToNapiArray<std::string, Napi::String >(env, vec);
     }
 
     else if (param.is<std::vector<int>>()){
         auto vec = param.as<std::vector<int>>();
-        return vector_to_napi_array<int, Napi::Number>(env, vec);
+        return vectorToNapiArray<int, Napi::Number>(env, vec);
     }
 
     else if (param.is<std::vector<unsigned int>>()){
         auto vec = param.as<std::vector<unsigned int>>();
-        return vector_to_napi_array<unsigned int, Napi::Number>(env, vec);
+        return vectorToNapiArray<unsigned int, Napi::Number>(env, vec);
     }
 
     else if (param.is<std::tuple<int, int >>()) {
         auto tpl = param.as<std::tuple<int, int >>();
-        return tuple_to_napi_array<int, Napi::Number>(env, tpl);
+        return tupleToNapiArray<int, Napi::Number>(env, tpl);
     }
 
     else if (param.is<std::tuple<int, int, int >>()) {
         auto tpl = param.as<std::tuple<int, int, int >>();
-        return tuple_to_napi_array<int, Napi::Number>(env, tpl);
+        return tupleToNapiArray<int, Napi::Number>(env, tpl);
     }
 
     else if (param.is<std::tuple<unsigned int, unsigned int >>()) {
         auto tpl = param.as<std::tuple<unsigned int, unsigned int >>();
-        return tuple_to_napi_array<unsigned int, Napi::Number>(env, tpl);
+        return tupleToNapiArray<unsigned int, Napi::Number>(env, tpl);
     }
 
     else if (param.is<std::tuple<unsigned int, unsigned int, unsigned int >>()) {
         auto tpl = param.as<std::tuple<unsigned int, unsigned int, unsigned int >>();
-        return tuple_to_napi_array<unsigned int, Napi::Number>(env, tpl);
+        return tupleToNapiArray<unsigned int, Napi::Number>(env, tpl);
     }
     else if (param.is<std::map<std::string, std::string>>()) {
         auto tpl = param.as<std::tuple<std::string, std::string >>();
-        return tuple_to_napi_array<std::string, Napi::String>(env, tpl);
+        return tupleToNapiArray<std::string, Napi::String>(env, tpl);
     }
 
     else if (param.is<std::map<std::string, int>>()) {
@@ -78,7 +78,7 @@ Napi::Value parseParameter(const Napi::Env& env, const InferenceEngine::Paramete
 }
 
 template<class T, class K>
-const Napi::Array vector_to_napi_array(const Napi::Env& env, const std::vector<T> & vec) {
+const Napi::Array InferenceEngineJS::vectorToNapiArray(const Napi::Env& env, const std::vector<T> & vec) {
     Napi::Array result = Napi::Array::New(env);
     int size = vec.size();
     for (int i = 0; i < size; i++) {
@@ -88,7 +88,7 @@ const Napi::Array vector_to_napi_array(const Napi::Env& env, const std::vector<T
 }
 
 template<class T, class K>
-const Napi::Array tuple_to_napi_array(const Napi::Env& env, const std::tuple<T, T, T> & tpl) {
+const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env& env, const std::tuple<T, T, T> & tpl) {
     Napi::Array result = Napi::Array::New(env, 3);
     int i = 0;
     result[i++] = K::New(env, static_cast<T>(std::get<0>(tpl)));
@@ -98,10 +98,21 @@ const Napi::Array tuple_to_napi_array(const Napi::Env& env, const std::tuple<T, 
 }
 
 template<class T, class K>
-const Napi::Array tuple_to_napi_array(const Napi::Env& env, const std::tuple<T, T> & tpl) {
+const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env& env, const std::tuple<T, T> & tpl) {
     Napi::Array result = Napi::Array::New(env, 2);
     int i = 0;
     result[i++] = K::New(env, static_cast<T>(std::get<0>(tpl)));
     result[i++] = K::New(env, static_cast<T>(std::get<1>(tpl)));
+    return result;
+}
+
+std::map<std::string,std::string> InferenceEngineJS::objectToMap(const Napi::Object& object){
+    auto configs = object.GetPropertyNames();
+    std::map<std::string,std::string> result;
+    for (auto i = 0; i < configs.Length(); i++) {
+        auto propertyName = configs.Get(i).ToString();
+        auto propertyValue = object.Get(propertyName).ToString();
+        result[std::string(propertyName)] = std::string(propertyValue);
+    }
     return result;
 }

@@ -4,9 +4,9 @@ project(InferenceEngineAddon)
 
 set(CMAKE_CXX_STANDARD 11)
 
-find_package(InferenceEngine 2.1 REQUIRED)
+#find_package(InferenceEngine 2.1 REQUIRED)
 
-include_directories("include" "${InferenceEngine_INCLUDE_DIRS}")
+include_directories("${CMAKE_SOURCE_DIR}/include")
 
 file(GLOB SOURCE_FILES
         src/*.cpp

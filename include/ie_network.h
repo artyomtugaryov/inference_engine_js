@@ -6,20 +6,27 @@
 #include <ie_core.hpp>
 #include <inference_engine.hpp>
 
-class IENetwork : public Napi::ObjectWrap<IENetwork> {
+namespace InferenceEngineJS {
+    class IENetwork : public Napi::ObjectWrap<IENetwork> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        IENetwork(const Napi::CallbackInfo &info);
+        explicit IENetwork(const Napi::CallbackInfo &info);
+
+        void setBatchSize(const Napi::CallbackInfo &info);
 
         Napi::Value getBatchSize(const Napi::CallbackInfo &info);
 
         Napi::Value getPrecision(const Napi::CallbackInfo &info);
 
+        Napi::Value getName(const Napi::CallbackInfo &info);
+
+        Napi::Value layerCount(const Napi::CallbackInfo &info);
+
     private:
         static Napi::FunctionReference constructor;
 
-        InferenceEngine::CNNNetwork _ie_network;
-};
-
+        std::shared_ptr<InferenceEngine::CNNNetwork> _ie_network;
+    };
+}
 #endif //INFERENCE_ENGINE_ADDON_IE_NETWORK_H
