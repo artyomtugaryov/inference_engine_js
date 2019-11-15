@@ -11,3 +11,9 @@ report/
 node_modules/
 
 build/
+
+#InferenceEngine
+thread.info
+
+#Cmake
+cmake-build-*/

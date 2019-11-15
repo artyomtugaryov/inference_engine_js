@@ -74,7 +74,7 @@ Napi::Value parseParameter(const Napi::Env& env, const InferenceEngine::Paramete
         return result;
     }
 
-    throw "Cannot parse argument";
+    throw Napi::Error::New(env, "Cannot parse argument");
 }
 
 template<class T, class K>
