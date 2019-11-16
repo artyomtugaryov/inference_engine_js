@@ -1,6 +1,8 @@
 #include <ie_layer.h>
 #include "ie_network.h"
 
+using namespace InferenceEngine;
+
 Napi::Object InferenceEngineJS::IENetwork::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "IENetwork", {
             InstanceMethod("setBatchSize", &IENetwork::setBatchSize),
@@ -18,12 +20,12 @@ Napi::Object InferenceEngineJS::IENetwork::Init(Napi::Env env, Napi::Object expo
     return exports;
 }
 
-InferenceEngineJS::IENetwork::IENetwork(const Napi::CallbackInfo &info): Napi::ObjectWrap<IENetwork>(info) {
+InferenceEngineJS::IENetwork::IENetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<IENetwork>(info) {
 
     auto model = std::string(info[0].ToString());
     auto weights = std::string(info[1].ToString());
 
-    InferenceEngine::CNNNetReader net_reader;
+    CNNNetReader net_reader;
     net_reader.ReadNetwork(model);
     net_reader.ReadWeights(weights);
 
@@ -58,6 +60,6 @@ Napi::Value InferenceEngineJS::IENetwork::layerCount(const Napi::CallbackInfo &i
 Napi::Value InferenceEngineJS::IENetwork::getLayerByName(const Napi::CallbackInfo &info) {
     auto layerName = std::string(info[0].ToString());
     auto layerPtr = this->_ieNetwork.getLayerByName(layerName.c_str());
-    auto ieLayer  = InferenceEngineJS::IELayer::New(info, layerPtr);
-    return ieLayer.Value();
+    auto ieLayer = IELayer::constructor.New({Napi::External<CNNLayer>::New(info.Env(), layerPtr.get())});
+    return ieLayer;
 }
