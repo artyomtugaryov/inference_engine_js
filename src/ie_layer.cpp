@@ -12,13 +12,7 @@ Napi::Object InferenceEngineJS::IELayer::Init(Napi::Env env, Napi::Object export
 }
 
 InferenceEngineJS::IELayer::IELayer(const Napi::CallbackInfo &info) : Napi::ObjectWrap<IELayer>(info) {
+    this->_ieCNNLayer = std::shared_ptr<InferenceEngine::CNNLayer>(info[0].As<Napi::External<InferenceEngine::CNNLayer>>().Data());
 }
 
 Napi::FunctionReference InferenceEngineJS::IELayer::constructor;
-
-InferenceEngineJS::IELayer InferenceEngineJS::IELayer::New(const Napi::CallbackInfo &info,
-                                                           const InferenceEngine::CNNLayerPtr &layerPtr) {
-    IELayer layer(info);
-    layer._ieCNNLayer = layerPtr;
-    return layer;
-}
