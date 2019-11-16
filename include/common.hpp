@@ -12,6 +12,8 @@ namespace InferenceEngineJS {
     const Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple <T, T> &tpl);
 
     Napi::Value parseParameter(const Napi::Env &env, const InferenceEngine::Parameter &param);
+
+    std::map<std::string,std::string> objectToMap(const Napi::Object& object);
 }
 
 

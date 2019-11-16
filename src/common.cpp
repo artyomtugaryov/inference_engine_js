@@ -63,7 +63,7 @@ Napi::Value InferenceEngineJS::parseParameter(const Napi::Env& env, const Infere
     else if (param.is<std::map<std::string, int>>()) {
         auto dict = param.as<std::map<std::string, int>>();
         Napi::Array result = Napi::Array::New(env);
-        auto i = 0;
+        std::size_t i = 0;
         for (const auto &it : dict){
             auto obj = Napi::Object::New(env);
             obj.Set("name", it.first.c_str());
@@ -81,7 +81,7 @@ template<class T, class K>
 const Napi::Array InferenceEngineJS::vectorToNapiArray(const Napi::Env& env, const std::vector<T> & vec) {
     Napi::Array result = Napi::Array::New(env);
     int size = vec.size();
-    for (int i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         result[i] = K::New(env, vec[i]);
     }
     return result;
@@ -90,7 +90,7 @@ const Napi::Array InferenceEngineJS::vectorToNapiArray(const Napi::Env& env, con
 template<class T, class K>
 const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env& env, const std::tuple<T, T, T> & tpl) {
     Napi::Array result = Napi::Array::New(env, 3);
-    int i = 0;
+    std::size_t i = 0;
     result[i++] = K::New(env, static_cast<T>(std::get<0>(tpl)));
     result[i++] = K::New(env, static_cast<T>(std::get<1>(tpl)));
     result[i++] = K::New(env, static_cast<T>(std::get<2>(tpl)));
@@ -100,7 +100,7 @@ const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env& env, cons
 template<class T, class K>
 const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env& env, const std::tuple<T, T> & tpl) {
     Napi::Array result = Napi::Array::New(env, 2);
-    int i = 0;
+    std::size_t i = 0;
     result[i++] = K::New(env, static_cast<T>(std::get<0>(tpl)));
     result[i++] = K::New(env, static_cast<T>(std::get<1>(tpl)));
     return result;

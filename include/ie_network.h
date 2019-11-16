@@ -26,7 +26,7 @@ namespace InferenceEngineJS {
     private:
         static Napi::FunctionReference constructor;
 
-        std::shared_ptr<InferenceEngine::CNNNetwork> _ie_network;
+        InferenceEngine::CNNNetwork _ieNetwork;
     };
 }
 #endif //INFERENCE_ENGINE_ADDON_IE_NETWORK_H

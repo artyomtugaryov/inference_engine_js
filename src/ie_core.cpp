@@ -85,7 +85,7 @@ Napi::Value InferenceEngineJS::IECore::getAvailableDevices(const Napi::CallbackI
     auto devices = this->_ie_core->GetAvailableDevices();
     auto size = devices.size();
 
-    for (auto i = 0; i < size; i++) {
+    for (std::size_t i = 0; i < size; i++) {
         result[i] = Napi::String::New(env, devices[i]);
     }
 

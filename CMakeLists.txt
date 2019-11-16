@@ -4,13 +4,16 @@ project(InferenceEngineAddon)
 
 set(CMAKE_CXX_STANDARD 11)
 
-#find_package(InferenceEngine 2.1 REQUIRED)
+find_package(InferenceEngine 2.1 REQUIRED)
 
-include_directories("${CMAKE_SOURCE_DIR}/include")
+include_directories("${CMAKE_SOURCE_DIR}/include"
+                    "${InferenceEngine_INCLUDE_DIRS}")
 
 file(GLOB SOURCE_FILES
         src/*.cpp
         src/*.c)
+
+add_compile_definitions(NAPI_DISABLE_CPP_EXCEPTIONS)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 
