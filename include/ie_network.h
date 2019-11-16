@@ -23,6 +23,8 @@ namespace InferenceEngineJS {
 
         Napi::Value layerCount(const Napi::CallbackInfo &info);
 
+        Napi::Value getLayerByName(const Napi::CallbackInfo &info);
+
     private:
         static Napi::FunctionReference constructor;
 

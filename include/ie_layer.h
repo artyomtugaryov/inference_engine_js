@@ -1,5 +1,5 @@
-#ifndef INFERENCE_ENGINE_ADDON_IE_NETWORK_H
-#define INFERENCE_ENGINE_ADDON_IE_NETWORK_H
+#ifndef INFERENCE_ENGINE_ADDON_IE_LAYER_H
+#define INFERENCE_ENGINE_ADDON_IE_LAYER_H
 
 #include <napi.h>
 
@@ -7,20 +7,19 @@
 #include <inference_engine.hpp>
 
 namespace InferenceEngineJS {
-    class IENetLayer : public Napi::ObjectWrap<IENetwork> {
+    class IELayer : public Napi::ObjectWrap<IELayer> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        IENetwork(const Napi::CallbackInfo &info);
+        static IELayer New(const Napi::CallbackInfo &info, const InferenceEngine::CNNLayerPtr &layer);
 
-        Napi::Value getBatchSize(const Napi::CallbackInfo &info);
-
-        Napi::Value getPrecision(const Napi::CallbackInfo &info);
+        IELayer(const Napi::CallbackInfo &info);
 
     private:
+
         static Napi::FunctionReference constructor;
 
-        InferenceEngine::CNNNetwork _ie_network;
+        InferenceEngine::CNNLayerPtr _ieCNNLayer;
     };
 }
-#endif //INFERENCE_ENGINE_ADDON_IE_NETWORK_H
+#endif //INFERENCE_ENGINE_ADDON_IE_LAYER_H

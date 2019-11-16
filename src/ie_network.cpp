@@ -1,3 +1,4 @@
+#include <ie_layer.h>
 #include "ie_network.h"
 
 Napi::Object InferenceEngineJS::IENetwork::Init(Napi::Env env, Napi::Object exports) {
@@ -31,7 +32,7 @@ InferenceEngineJS::IENetwork::IENetwork(const Napi::CallbackInfo &info): Napi::O
 Napi::FunctionReference InferenceEngineJS::IENetwork::constructor;
 
 void InferenceEngineJS::IENetwork::setBatchSize(const Napi::CallbackInfo &info) {
-    auto batchSize = info[0].ToNumber();
+    auto batchSize = info[0].ToNumber().Int32Value();
     this->_ieNetwork.setBatchSize(batchSize);
 }
 
@@ -51,4 +52,11 @@ Napi::Value InferenceEngineJS::IENetwork::getName(const Napi::CallbackInfo &info
 
 Napi::Value InferenceEngineJS::IENetwork::layerCount(const Napi::CallbackInfo &info) {
     return Napi::Number::New(info.Env(), this->_ieNetwork.layerCount());
+}
+
+Napi::Value InferenceEngineJS::IENetwork::getLayerByName(const Napi::CallbackInfo &info) {
+    auto layerName = std::string(info[0].ToString());
+    auto layerPtr = this->_ieNetwork.getLayerByName(layerName.c_str());
+    auto ieLayer  = InferenceEngineJS::IELayer::New(info, layerPtr);
+    return ieLayer.Value();
 }
