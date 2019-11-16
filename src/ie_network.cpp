@@ -3,8 +3,8 @@
 
 Napi::Object InferenceEngineJS::IENetwork::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "IENetwork", {
-            InstanceMethod("setBatchSize", &IENetwork::getBatchSize),
-            InstanceMethod("getBatchSize", &IENetwork::getLayerByName),
+            InstanceMethod("setBatchSize", &IENetwork::setBatchSize),
+            InstanceMethod("getBatchSize", &IENetwork::getBatchSize),
             InstanceMethod("getPrecision", &IENetwork::getPrecision),
             InstanceMethod("getName", &IENetwork::getName),
             InstanceMethod("layerCount", &IENetwork::layerCount),
