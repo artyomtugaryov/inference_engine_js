@@ -11,13 +11,11 @@ namespace InferenceEngineJS {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        static IELayer New(const Napi::CallbackInfo &info, const InferenceEngine::CNNLayerPtr &layer);
-
-        IELayer(const Napi::CallbackInfo &info);
-
-    private:
+        explicit IELayer(const Napi::CallbackInfo &info);
 
         static Napi::FunctionReference constructor;
+
+    private:
 
         InferenceEngine::CNNLayerPtr _ieCNNLayer;
     };
