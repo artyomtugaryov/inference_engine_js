@@ -14,6 +14,8 @@ namespace InferenceEngineJS {
     Napi::Value parseParameter(const Napi::Env &env, const InferenceEngine::Parameter &param);
 
     std::map<std::string,std::string> objectToMap(const Napi::Object& object);
+
+    Napi::Value mapToObject(const Napi::Object& object);
 }
 
 

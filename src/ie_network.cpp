@@ -63,3 +63,8 @@ Napi::Value InferenceEngineJS::IENetwork::getLayerByName(const Napi::CallbackInf
     auto ieLayer = IELayer::constructor.New({Napi::External<CNNLayer>::New(info.Env(), layerPtr.get())});
     return ieLayer;
 }
+
+Napi::Value InferenceEngineJS::IENetwork::getInputsInfo(const Napi::CallbackInfo &info) {
+    auto inputInfo = this->_ieNetwork.getInputsInfo();
+    return Napi::String::New(info.Env(), "");
+}

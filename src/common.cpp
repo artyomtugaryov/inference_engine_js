@@ -109,7 +109,7 @@ const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env& env, cons
 std::map<std::string,std::string> InferenceEngineJS::objectToMap(const Napi::Object& object){
     auto configs = object.GetPropertyNames();
     std::map<std::string,std::string> result;
-    for (auto i = 0; i < configs.Length(); i++) {
+    for (std::size_t i = 0; i < configs.Length(); i++) {
         auto propertyName = configs.Get(i).ToString();
         auto propertyValue = object.Get(propertyName).ToString();
         result[std::string(propertyName)] = std::string(propertyValue);
