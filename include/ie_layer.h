@@ -15,6 +15,9 @@ namespace InferenceEngineJS {
 
         static Napi::FunctionReference constructor;
 
+        Napi::Value getParamAsString(const Napi::CallbackInfo &info);
+
+
     private:
 
         InferenceEngine::CNNLayerPtr _ieCNNLayer;
