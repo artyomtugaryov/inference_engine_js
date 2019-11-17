@@ -9,9 +9,8 @@
   "main": "sample.js",
   "scripts": {
     "build": "node-gyp rebuild",
-    "sample": "node sample.js",
     "sample:hello-query-device": "node samples/hello_query_device.js",
-    "sample:inference": "node samples/inference.js"
+    "sample:network": "node samples/network.js"
   },
   "author": "",
   "license": "ISC",

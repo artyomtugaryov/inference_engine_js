@@ -14,8 +14,9 @@
       ],
       "target_name": "InferenceEngineAddon",
       "sources": [
-        "src/ie_core.cpp",
         "src/common.cpp",
+        "src/ie_core.cpp",
+        "src/ie_layer.cpp",
         "src/ie_network.cpp",
         "src/init.cpp"
        ],
