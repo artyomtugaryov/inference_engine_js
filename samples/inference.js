@@ -4,6 +4,7 @@ const patToModel = '/home/atugarev/Developer/OpenVINO/deployment_tools/workbench
 
 const ieNetwork = new ie.IENetwork(`${patToModel}xml`, `${patToModel}bin`);
 
-console.log(ieNetwork.batch);
+console.log(ieNetwork.getBatchSize());
 
-console.log(ieNetwork.precision);
+console.log(ieNetwork.size());
+console.log(ieNetwork.getLayerByName('pool').getParamAsString('pool-method'));
