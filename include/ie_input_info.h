@@ -15,6 +15,9 @@ namespace InferenceEngineJS {
 
         Napi::Value getDims(const Napi::CallbackInfo &info);
 
+        void setPrecision(const Napi::CallbackInfo &info);
+
+
     private:
 
         InferenceEngine::InputInfo::Ptr _ieInputInfo;

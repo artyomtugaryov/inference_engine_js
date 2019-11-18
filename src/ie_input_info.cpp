@@ -5,6 +5,7 @@
 Napi::Object InferenceEngineJS::IEInputInfo::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "IEInputInfo", {
             InstanceMethod("getDims", &IEInputInfo::getDims),
+            InstanceMethod("setPrecision", &IEInputInfo::setPrecision),
     });
 
     constructor = Napi::Persistent(func);
@@ -29,4 +30,10 @@ Napi::Value InferenceEngineJS::IEInputInfo::getDims(const Napi::CallbackInfo &in
     auto dims = this->_ieInputInfo->getInputData()->getDims();
 
     return vectorToNapiArray<std::size_t, Napi::Number>(env, dims);
+}
+
+void InferenceEngineJS::IEInputInfo::setPrecision(const Napi::CallbackInfo &info) {
+    auto env = info.Env();
+    auto precision = InferenceEngine::Precision::FromStr(std::string(info[0].ToString()));
+    this->_ieInputInfo->setPrecision(precision);
 }

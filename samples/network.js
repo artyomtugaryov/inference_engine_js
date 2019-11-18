@@ -8,4 +8,6 @@ console.log(`Batch size of the ${ieNetwork.getName()} network is ${ieNetwork.get
 
 console.log(`This network contains ${ieNetwork.size()} layers.`);
 
+console.log(`The network precision is  ${ieNetwork.getPrecision()} `);
+
 console.log(`Input layer data has ${ieNetwork.getInputsInfo()[0].data.getDims()} dimension.`);
