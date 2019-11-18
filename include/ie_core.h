@@ -8,7 +8,7 @@
 
 #include <ie_core.hpp>
 
-#include "common.hpp"
+#include "common.h"
 
 namespace InferenceEngineJS {
     class IECore : public Napi::ObjectWrap<IECore> {

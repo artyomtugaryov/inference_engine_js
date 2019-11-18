@@ -1,7 +1,11 @@
 #include <ie_layer.h>
+#include <inference_engine.hpp>
+
 #include "ie_network.h"
+#include "ie_input_info.h"
 
 using namespace InferenceEngine;
+using namespace Napi;
 
 Napi::Object InferenceEngineJS::IENetwork::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "IENetwork", {
@@ -12,6 +16,7 @@ Napi::Object InferenceEngineJS::IENetwork::Init(Napi::Env env, Napi::Object expo
             InstanceMethod("layerCount", &IENetwork::layerCount),
             InstanceMethod("size", &IENetwork::layerCount),
             InstanceMethod("getLayerByName", &IENetwork::getLayerByName),
+            InstanceMethod("getInputsInfo", &IENetwork::getInputsInfo),
     });
 
     constructor = Napi::Persistent(func);
@@ -65,6 +70,17 @@ Napi::Value InferenceEngineJS::IENetwork::getLayerByName(const Napi::CallbackInf
 }
 
 Napi::Value InferenceEngineJS::IENetwork::getInputsInfo(const Napi::CallbackInfo &info) {
-    auto inputInfo = this->_ieNetwork.getInputsInfo();
-    return Napi::String::New(info.Env(), "");
+    auto env = info.Env();
+    auto inputsDataMap = this->_ieNetwork.getInputsInfo();
+    Napi::Array result = Napi::Array::New(env, inputsDataMap.size());
+    std::size_t i = 0;
+    for (auto inputInfo: inputsDataMap) {
+        auto inputInfoPtr = inputInfo.second;
+        auto obj = Napi::Object::New(env);
+        auto ieInputInfo = IEInputInfo::constructor.New({Napi::External<InputInfo>::New(env, inputInfoPtr.get())});
+        obj.Set(inputInfo.first, ieInputInfo);
+        result[i++] = obj;
+    }
+
+    return result;
 }

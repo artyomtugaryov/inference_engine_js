@@ -1,4 +1,4 @@
-#include "common.hpp"
+#include "common.h"
 
 Napi::Value InferenceEngineJS::parseParameter(const Napi::Env& env, const InferenceEngine::Parameter &param) {
     if (param.is<std::string>()) {
@@ -66,8 +66,7 @@ Napi::Value InferenceEngineJS::parseParameter(const Napi::Env& env, const Infere
         std::size_t i = 0;
         for (const auto &it : dict){
             auto obj = Napi::Object::New(env);
-            obj.Set("name", it.first.c_str());
-            obj.Set("value", Napi::Number::New(env, static_cast<int>(it.second)));
+            obj.Set(it.first.c_str(), Napi::Number::New(env, static_cast<int>(it.second)));
             result[i] = obj;
             i++;
         }
@@ -75,16 +74,6 @@ Napi::Value InferenceEngineJS::parseParameter(const Napi::Env& env, const Infere
     }
 
     throw Napi::Error::New(env, "Cannot parse argument");
-}
-
-template<class InputType, class OutputType>
-const Napi::Array InferenceEngineJS::vectorToNapiArray(const Napi::Env& env, const std::vector<InputType> & vec) {
-    Napi::Array result = Napi::Array::New(env);
-    int size = vec.size();
-    for (std::size_t i = 0; i < size; i++) {
-        result[i] = OutputType::New(env, vec[i]);
-    }
-    return result;
 }
 
 template<class T, class K>
