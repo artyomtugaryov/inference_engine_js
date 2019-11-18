@@ -23,4 +23,6 @@ namespace InferenceEngineJS {
     std::map<std::string, std::string> objectToMap(const Napi::Object &object);
 
     Napi::Value mapToObject(const Napi::Object &object);
+
+    InferenceEngine::Layout layoutFromString(const std::string& layout);
 }

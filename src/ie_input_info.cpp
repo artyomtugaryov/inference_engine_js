@@ -37,3 +37,9 @@ void InferenceEngineJS::IEInputInfo::setPrecision(const Napi::CallbackInfo &info
     auto precision = InferenceEngine::Precision::FromStr(std::string(info[0].ToString()));
     this->_ieInputInfo->setPrecision(precision);
 }
+void InferenceEngineJS::IEInputInfo::setLayout(const Napi::CallbackInfo &info) {
+    auto env = info.Env();
+    auto layout = layoutFromString(std::string(info[0].ToString()));
+    this->_ieInputInfo->setLayout(layout);
+}
+

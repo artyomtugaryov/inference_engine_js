@@ -16,6 +16,8 @@ namespace InferenceEngineJS {
         Napi::Value getDims(const Napi::CallbackInfo &info);
 
         void setPrecision(const Napi::CallbackInfo &info);
+        
+        void setLayout(const Napi::CallbackInfo &info);
 
 
     private:
