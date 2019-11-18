@@ -77,12 +77,12 @@ Napi::Value InferenceEngineJS::parseParameter(const Napi::Env& env, const Infere
     throw Napi::Error::New(env, "Cannot parse argument");
 }
 
-template<class T, class K>
-const Napi::Array InferenceEngineJS::vectorToNapiArray(const Napi::Env& env, const std::vector<T> & vec) {
+template<class InputType, class OutputType>
+const Napi::Array InferenceEngineJS::vectorToNapiArray(const Napi::Env& env, const std::vector<InputType> & vec) {
     Napi::Array result = Napi::Array::New(env);
     int size = vec.size();
     for (std::size_t i = 0; i < size; i++) {
-        result[i] = K::New(env, vec[i]);
+        result[i] = OutputType::New(env, vec[i]);
     }
     return result;
 }

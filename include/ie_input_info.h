@@ -11,6 +11,8 @@ namespace InferenceEngineJS {
 
         explicit IEInputInfo(const Napi::CallbackInfo &info);
 
+        Napi::Value getDims(const Napi::CallbackInfo &info);
+
     private:
         static Napi::FunctionReference constructor;
 

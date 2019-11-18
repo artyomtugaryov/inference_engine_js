@@ -1,3 +1,4 @@
+#include <common.hpp>
 #include "ie_input_info.h"
 
 
@@ -16,8 +17,15 @@ InferenceEngineJS::IEInputInfo::IEInputInfo(const Napi::CallbackInfo &info) : Na
         throw Napi::Error::New(info.Env(),
                                "Set pointer to InputInfo to InferenceEngineJS::IEInputInfo constructor for initialize");
     }
-    auto layerPtr = info[0].As < Napi::External < InferenceEngine::InputInfo >> ().Data();
+    auto layerPtr = info[0].As<Napi::External<InferenceEngine::InputInfo >>().Data();
     this->_ieInputInfo = std::shared_ptr<InferenceEngine::InputInfo>(layerPtr);
 }
 
 Napi::FunctionReference InferenceEngineJS::IEInputInfo::constructor;
+
+Napi::Value InferenceEngineJS::IEInputInfo::getDims(const Napi::CallbackInfo &info) {
+    auto env = info.Env();
+    auto dims = this->_ieInputInfo->getInputData()->getDims();
+    auto returnDims = InferenceEngineJS::vectorToNapiArray<std::size_t, Napi::Number>(env, dims);
+    return returnDims;
+}

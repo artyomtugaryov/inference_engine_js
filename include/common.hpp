@@ -2,8 +2,8 @@
 #include <ie_core.hpp>
 
 namespace InferenceEngineJS {
-    template<class T, class K>
-    const Napi::Array vectorToNapiArray(const Napi::Env &env, const std::vector <T> &vec);
+    template<class InputType, class OutputType>
+    const Napi::Array vectorToNapiArray(const Napi::Env &env, const std::vector <InputType> &vec);
 
     template<class T, class K>
     const Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple <T, T, T> &tpl);
