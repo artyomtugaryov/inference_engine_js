@@ -1,4 +1,4 @@
-const { IECore } = require('bindings')('InferenceEngineAddon');
+const { IECore } = require('bindings')('InferenceEngineJS');
 
 const ieCore = new IECore();
 

@@ -1,4 +1,4 @@
-const ie = require('bindings')('InferenceEngineAddon');
+const ie = require('bindings')('InferenceEngineJS');
 
 const patToModel = `${process.env.MODEL_PATH}/classification/inception_v3/inception_v3.`;
 
