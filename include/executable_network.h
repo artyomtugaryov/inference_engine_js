@@ -18,7 +18,7 @@ namespace InferenceEngineJS {
         Napi::Value createInferRequest(const Napi::CallbackInfo &info);
     private:
 
-        InferenceEngine::ExecutableNetwork::Ptr _ieExecNetworkPtr;
+        InferenceEngine::ExecutableNetwork _ieExecNetwork;
 
     };
 }

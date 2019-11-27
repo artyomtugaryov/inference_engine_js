@@ -107,11 +107,11 @@ void InferenceEngineJS::Core::registerPlugin(const Napi::CallbackInfo &info) {
 void InferenceEngineJS::Core::unregisterPlugin(const Napi::CallbackInfo &info) {
 
     auto deviceName = std::string(info[0].ToString());
-
     this->_ieCore->UnregisterPlugin(deviceName);
 }
 
 void InferenceEngineJS::Core::registerPlugins(const Napi::CallbackInfo &info) {
+
     auto xmlConfigFile = std::string(info[0].ToString());
     this->_ieCore->RegisterPlugins(xmlConfigFile);
 }
@@ -126,9 +126,11 @@ Napi::Value InferenceEngineJS::Core::loadNetwork(const Napi::CallbackInfo &info)
         Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::Core loadNetwork for load Network").ThrowAsJavaScriptException();
         return env.Undefined();
     }
-    auto ieNetworkPTtr = Napi::ObjectWrap<CNNNetwork>::Unwrap(info[0].As<Napi::Object>());
-    auto device = std::string(info[1].ToString());
-    auto execNetwork = this->_ieCore->LoadNetwork(ieNetworkPTtr->getCNNNetwork(), device);
-    auto execNetworkObject = ExecutableNetwork::constructor.New({Napi::External<InferenceEngine::ExecutableNetwork>::New(env, &execNetwork)});
+    auto ieNetworkPtr = Napi::ObjectWrap<InferenceEngineJS::CNNNetwork>::Unwrap(info[0].As<Napi::Object>());
+    auto execNetworkObject = ExecutableNetwork::constructor.New({
+        Napi::External<InferenceEngine::CNNNetwork>::New(env, ieNetworkPtr->getCNNNetworkPtr()),
+        Napi::External<InferenceEngine::Core>::New(env, this->_ieCore.get()),
+        info[1]
+    });
     return execNetworkObject;
 }
