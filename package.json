@@ -11,7 +11,7 @@
     "build": "node-gyp rebuild",
     "sample:hello-query-device": "node samples/hello_query_device.js",
     "sample:network-information": "node samples/network_information.js",
-    "sample:classification-async": "node samples/classification-async.js"
+    "sample:classification-async": "node samples/classification_async.js"
   },
   "author": "",
   "license": "ISC",
