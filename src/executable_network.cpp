@@ -1,22 +1,22 @@
-#include <ie_layer.h>
+#include <cnn_layer.h>
 #include <inference_engine.hpp>
 
-#include "ie_exec_network.h"
+#include "executable_network.h"
 
 using namespace InferenceEngine;
 using namespace Napi;
 
-Napi::Object InferenceEngineJS::IEExecNetwork::Init(Napi::Env env, Napi::Object exports) {
-    Napi::Function func = DefineClass(env, "IEExecNetwork", {
+Napi::Object InferenceEngineJS::ExecutableNetwork::Init(Napi::Env env, Napi::Object exports) {
+    Napi::Function func = DefineClass(env, "ExecutableNetwork", {
     });
 
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();
-    exports.Set("IEExecNetwork", func);
+    exports.Set("ExecutableNetwork", func);
     return exports;
 }
 
-InferenceEngineJS::IEExecNetwork::IEExecNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<IEExecNetwork>(info) {
+InferenceEngineJS::ExecutableNetwork::ExecutableNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<ExecutableNetwork>(info) {
     if (info[0].IsUndefined()) {
         throw Napi::Error::New(info.Env(),
                                "Set pointer to ExecNetworkPtr to InferenceEngineJS::IEEexecNetwork constructor for initialize");
@@ -25,4 +25,4 @@ InferenceEngineJS::IEExecNetwork::IEExecNetwork(const Napi::CallbackInfo &info) 
     this->_ieExecNetworkPtr = std::shared_ptr<InferenceEngine::ExecutableNetwork>(execNetworkPtr);
 }
 
-Napi::FunctionReference InferenceEngineJS::IEExecNetwork::constructor;
+Napi::FunctionReference InferenceEngineJS::ExecutableNetwork::constructor;

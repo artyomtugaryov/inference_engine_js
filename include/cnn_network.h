@@ -7,11 +7,11 @@
 #include <inference_engine.hpp>
 
 namespace InferenceEngineJS {
-    class IENetwork : public Napi::ObjectWrap<IENetwork> {
+    class CNNNetwork : public Napi::ObjectWrap<CNNNetwork> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        explicit IENetwork(const Napi::CallbackInfo &info);
+        explicit CNNNetwork(const Napi::CallbackInfo &info);
 
         void setBatchSize(const Napi::CallbackInfo &info);
 

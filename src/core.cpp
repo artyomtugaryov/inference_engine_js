@@ -1,28 +1,28 @@
-#include <ie_exec_network.h>
-#include "ie_network.h"
-#include "ie_core.h"
+#include <executable_network.h>
+#include "cnn_network.h"
+#include "core.h"
 
-Napi::Object InferenceEngineJS::IECore::Init(Napi::Env env, Napi::Object exports) {
-    Napi::Function func = DefineClass(env, "IECore", {
-            InstanceMethod("getAvailableDevices", &IECore::getAvailableDevices),
-            InstanceMethod("getMetric", &IECore::getMetric),
-            InstanceMethod("getVersion", &IECore::getVersion),
-            InstanceMethod("setConfig", &IECore::getVersion),
-            InstanceMethod("addExtension", &IECore::addExtension),
-            InstanceMethod("registerPlugin", &IECore::registerPlugin),
-            InstanceMethod("registerPlugins", &IECore::registerPlugins),
-            InstanceMethod("unregisterPlugin", &IECore::unregisterPlugin),
-            InstanceMethod("loadNetwork", &IECore::loadNetwork),
+Napi::Object InferenceEngineJS::Core::Init(Napi::Env env, Napi::Object exports) {
+    Napi::Function func = DefineClass(env, "Core", {
+            InstanceMethod("getAvailableDevices", &Core::getAvailableDevices),
+            InstanceMethod("getMetric", &Core::getMetric),
+            InstanceMethod("getVersion", &Core::getVersion),
+            InstanceMethod("setConfig", &Core::getVersion),
+            InstanceMethod("addExtension", &Core::addExtension),
+            InstanceMethod("registerPlugin", &Core::registerPlugin),
+            InstanceMethod("registerPlugins", &Core::registerPlugins),
+            InstanceMethod("unregisterPlugin", &Core::unregisterPlugin),
+            InstanceMethod("loadNetwork", &Core::loadNetwork),
     });
 
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();
-    exports.Set("IECore", func);
+    exports.Set("Core", func);
 
     return exports;
 }
 
-InferenceEngineJS::IECore::IECore(const Napi::CallbackInfo &info) : Napi::ObjectWrap<IECore>(info) {
+InferenceEngineJS::Core::Core(const Napi::CallbackInfo &info) : Napi::ObjectWrap<Core>(info) {
 
     if (info[0].IsUndefined()) {
         this->_ieCore = std::make_shared<InferenceEngine::Core>();
@@ -32,9 +32,9 @@ InferenceEngineJS::IECore::IECore(const Napi::CallbackInfo &info) : Napi::Object
     }
 }
 
-Napi::FunctionReference InferenceEngineJS::IECore::constructor;
+Napi::FunctionReference InferenceEngineJS::Core::constructor;
 
-Napi::Value InferenceEngineJS::IECore::getVersion(const Napi::CallbackInfo &info) {
+Napi::Value InferenceEngineJS::Core::getVersion(const Napi::CallbackInfo &info) {
 
     auto env = info.Env();
     auto deviceName = std::string(info[0].ToString());
@@ -54,7 +54,7 @@ Napi::Value InferenceEngineJS::IECore::getVersion(const Napi::CallbackInfo &info
     return Napi::String::New(env, ss.str());
 }
 
-void InferenceEngineJS::IECore::addExtension(const Napi::CallbackInfo &info) {
+void InferenceEngineJS::Core::addExtension(const Napi::CallbackInfo &info) {
 
     auto extLibPath = std::string(info[0].ToString());
     auto deviceName = std::string(info[1].ToString());
@@ -65,14 +65,14 @@ void InferenceEngineJS::IECore::addExtension(const Napi::CallbackInfo &info) {
     this->_ieCore->AddExtension(extension, deviceName);
 }
 
-void InferenceEngineJS::IECore::setConfig(const Napi::CallbackInfo &info) {
+void InferenceEngineJS::Core::setConfig(const Napi::CallbackInfo &info) {
     auto configObject = info[0].As<Napi::Object>();
     auto device = info[1].As<Napi::String>();
     auto params = objectToMap(configObject);
     this->_ieCore->SetConfig(params, device);
 }
 
-Napi::Value InferenceEngineJS::IECore::getMetric(const Napi::CallbackInfo &info) {
+Napi::Value InferenceEngineJS::Core::getMetric(const Napi::CallbackInfo &info) {
 
     auto device = std::string(info[0].ToString());
     auto metric = std::string(info[1].ToString());
@@ -81,7 +81,7 @@ Napi::Value InferenceEngineJS::IECore::getMetric(const Napi::CallbackInfo &info)
     return parseParameter(info.Env(), parameter);
 }
 
-Napi::Value InferenceEngineJS::IECore::getAvailableDevices(const Napi::CallbackInfo &info) {
+Napi::Value InferenceEngineJS::Core::getAvailableDevices(const Napi::CallbackInfo &info) {
 
     auto env = info.Env();
     auto result = Napi::Array::New(env);
@@ -95,7 +95,7 @@ Napi::Value InferenceEngineJS::IECore::getAvailableDevices(const Napi::CallbackI
     return result;
 }
 
-void InferenceEngineJS::IECore::registerPlugin(const Napi::CallbackInfo &info) {
+void InferenceEngineJS::Core::registerPlugin(const Napi::CallbackInfo &info) {
 
     auto pluginName = std::string(info[0].ToString());
     auto deviceName = std::string(info[1].ToString());
@@ -104,29 +104,29 @@ void InferenceEngineJS::IECore::registerPlugin(const Napi::CallbackInfo &info) {
 
 }
 
-void InferenceEngineJS::IECore::unregisterPlugin(const Napi::CallbackInfo &info) {
+void InferenceEngineJS::Core::unregisterPlugin(const Napi::CallbackInfo &info) {
 
     auto deviceName = std::string(info[0].ToString());
 
     this->_ieCore->UnregisterPlugin(deviceName);
 }
 
-void InferenceEngineJS::IECore::registerPlugins(const Napi::CallbackInfo &info) {
+void InferenceEngineJS::Core::registerPlugins(const Napi::CallbackInfo &info) {
     auto xmlConfigFile = std::string(info[0].ToString());
     this->_ieCore->RegisterPlugins(xmlConfigFile);
 }
 
-Napi::Value InferenceEngineJS::IECore::loadNetwork(const Napi::CallbackInfo &info){
+Napi::Value InferenceEngineJS::Core::loadNetwork(const Napi::CallbackInfo &info){
     auto env = info.Env();
     if (info[0].IsUndefined()) {
-        throw Napi::Error::New(info.Env(), "Set IENetwork to InferenceEngineJS::IECore loadNetwork for initialize");
+        throw Napi::Error::New(info.Env(), "Set CNNNetwork to InferenceEngineJS::Core loadNetwork for initialize");
     }
     if (info[1].IsUndefined()) {
-        throw Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::IECore loadNetwork for load Network");
+        throw Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::Core loadNetwork for load Network");
     }
-    auto ieNetworkPTtr = Napi::ObjectWrap<IENetwork>::Unwrap(info[0].As<Napi::Object>());
+    auto ieNetworkPTtr = Napi::ObjectWrap<CNNNetwork>::Unwrap(info[0].As<Napi::Object>());
     auto device = std::string(info[1].ToString());
     auto execNetwork = this->_ieCore->LoadNetwork(ieNetworkPTtr->getCNNNetwork(), device);
-    auto execNetworkObject = IEExecNetwork::constructor.New({Napi::External<InferenceEngine::ExecutableNetwork>::New(env, &execNetwork)});
+    auto execNetworkObject = ExecutableNetwork::constructor.New({Napi::External<InferenceEngine::ExecutableNetwork>::New(env, &execNetwork)});
     return execNetworkObject;
 }

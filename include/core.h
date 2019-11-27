@@ -11,11 +11,11 @@
 #include "common.h"
 
 namespace InferenceEngineJS {
-    class IECore : public Napi::ObjectWrap<IECore> {
+    class Core : public Napi::ObjectWrap<Core> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        IECore(const Napi::CallbackInfo &info);
+        Core(const Napi::CallbackInfo &info);
 
     private:
         static Napi::FunctionReference constructor;

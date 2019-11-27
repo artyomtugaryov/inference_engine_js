@@ -3,15 +3,15 @@
 
 #include <napi.h>
 
-#include <ie_core.hpp>
+#include <inference_engine.hpp>
 
 
 namespace InferenceEngineJS {
-    class IEExecNetwork : public Napi::ObjectWrap<IEExecNetwork> {
+    class ExecutableNetwork : public Napi::ObjectWrap<ExecutableNetwork> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        IEExecNetwork(const Napi::CallbackInfo &info);
+        ExecutableNetwork(const Napi::CallbackInfo &info);
 
         static Napi::FunctionReference constructor;
     private:

@@ -1,6 +1,6 @@
 const { IECore } = require('bindings')('InferenceEngineAddon');
 
-const ieCore = new IECore();
+const ieCore = new Core();
 
 const availableDevices = ieCore.getAvailableDevices();
 

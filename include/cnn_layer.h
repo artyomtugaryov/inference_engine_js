@@ -7,11 +7,11 @@
 #include <inference_engine.hpp>
 
 namespace InferenceEngineJS {
-    class IELayer : public Napi::ObjectWrap<IELayer> {
+    class CNNLayer : public Napi::ObjectWrap<CNNLayer> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        explicit IELayer(const Napi::CallbackInfo &info);
+        explicit CNNLayer(const Napi::CallbackInfo &info);
 
         static Napi::FunctionReference constructor;
 
