@@ -1,6 +1,5 @@
 #include <napi.h>
 
-
 #include "blob.h"
 #include "cnn_layer.h"
 #include "cnn_network.h"

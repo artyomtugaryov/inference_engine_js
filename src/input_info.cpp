@@ -6,6 +6,7 @@ Napi::Object InferenceEngineJS::InputInfo::Init(Napi::Env env, Napi::Object expo
     Napi::Function func = DefineClass(env, "InputInfo", {
             InstanceMethod("getDims", &InputInfo::getDims),
             InstanceMethod("setPrecision", &InputInfo::setPrecision),
+            InstanceMethod("setLayout", &InputInfo::setLayout),
     });
 
     constructor = Napi::Persistent(func);
