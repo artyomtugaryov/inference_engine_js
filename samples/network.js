@@ -1,4 +1,4 @@
-const ie = require('bindings')('InferenceEngineAddon');
+const ie = require('bindings')('InferenceEngineJS');
 
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
@@ -12,5 +12,6 @@ console.log(`The network precision is  ${network.getPrecision()} `);
 
 console.log(`Input layer data has ${network.getInputsInfo()[0].data.getDims()} dimension.`);
 
-const ieCore = new ie.Core();
+onst ieCore = new ie.Core();
 const executableNetwork = ieCore.loadNetwork(network, 'CPU');
+
