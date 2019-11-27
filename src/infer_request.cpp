@@ -16,8 +16,8 @@ InferenceEngineJS::InferRequest::InferRequest(const Napi::CallbackInfo &info) : 
         Napi::Error::New(info.Env(), "Set pointer to InferRequest to InferenceEngineJS::InferRequest constructor for initialize").ThrowAsJavaScriptException();
         return;
     }
-    auto executableNetworkPtr = info[0].As<Napi::External<InferenceEngine::InferRequest>>().Data();
-    this->_inferRequestPtr = std::shared_ptr<InferenceEngine::InferRequest>(executableNetworkPtr);
+    auto executableNetworkPtr = info[0].As<Napi::External<InferenceEngine::ExecutableNetwork>>().Data();
+    this->_inferRequestPtr = executableNetworkPtr->CreateInferRequestPtr();
 }
 
 Napi::FunctionReference InferenceEngineJS::InferRequest::constructor;
