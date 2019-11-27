@@ -1,5 +1,5 @@
-#ifndef INFERENCE_ENGINE_ADDON_IE_EXEC_NETWORK_H
-#define INFERENCE_ENGINE_ADDON_IE_EXEC_NETWORK_H
+#ifndef INFERENCEENGINE_JS_IE_EXECUTABLE_NETWORK_H
+#define INFERENCEENGINE_JS_IE_EXECUTABLE_NETWORK_H
 
 #include <napi.h>
 
@@ -11,9 +11,11 @@ namespace InferenceEngineJS {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        ExecutableNetwork(const Napi::CallbackInfo &info);
-
         static Napi::FunctionReference constructor;
+
+        explicit ExecutableNetwork(const Napi::CallbackInfo &info);
+
+        Napi::Value createInferRequest(const Napi::CallbackInfo &info);
     private:
 
         InferenceEngine::ExecutableNetwork::Ptr _ieExecNetworkPtr;
@@ -21,4 +23,4 @@ namespace InferenceEngineJS {
     };
 }
 
-#endif //INFERENCE_ENGINE_ADDON_IE_EXEC_NETWORK_H
+#endif //INFERENCEENGINE_JS_IE_EXECUTABLE_NETWORK_H

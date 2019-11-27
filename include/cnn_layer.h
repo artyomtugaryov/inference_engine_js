@@ -1,5 +1,5 @@
-#ifndef INFERENCE_ENGINE_ADDON_IE_LAYER_H
-#define INFERENCE_ENGINE_ADDON_IE_LAYER_H
+#ifndef INFERENCEENGINE_JS_CNN_LAYER_H
+#define INFERENCEENGINE_JS_CNN_LAYER_H
 
 #include <napi.h>
 
@@ -11,9 +11,9 @@ namespace InferenceEngineJS {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        explicit CNNLayer(const Napi::CallbackInfo &info);
-
         static Napi::FunctionReference constructor;
+
+        explicit CNNLayer(const Napi::CallbackInfo &info);
 
         Napi::Value getParamAsString(const Napi::CallbackInfo &info);
 
@@ -23,4 +23,4 @@ namespace InferenceEngineJS {
         InferenceEngine::CNNLayerPtr _ieCNNLayer;
     };
 }
-#endif //INFERENCE_ENGINE_ADDON_IE_LAYER_H
+#endif //INFERENCEENGINE_JS_CNN_LAYER_H

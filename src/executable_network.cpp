@@ -1,5 +1,6 @@
 #include <cnn_layer.h>
 #include <inference_engine.hpp>
+#include <infer_request.h>
 
 #include "executable_network.h"
 
@@ -26,3 +27,10 @@ InferenceEngineJS::ExecutableNetwork::ExecutableNetwork(const Napi::CallbackInfo
 }
 
 Napi::FunctionReference InferenceEngineJS::ExecutableNetwork::constructor;
+
+Napi::Value InferenceEngineJS::ExecutableNetwork::createInferRequest(const Napi::CallbackInfo &info){
+    auto env = info.Env();
+    auto inferRequest = this->_ieExecNetworkPtr->CreateInferRequest();
+    auto inferRequestObj = InferenceEngineJS::InferRequest::constructor.New({Napi::External<InferenceEngine::InferRequest>::New(env, &inferRequest)});
+    return inferRequestObj;
+}

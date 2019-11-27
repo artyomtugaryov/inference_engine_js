@@ -1,5 +1,5 @@
-#ifndef INFERENCE_ENGINE_ADDON_IE_INPUT_INFO_H
-#define INFERENCE_ENGINE_ADDON_IE_INPUT_INFO_H
+#ifndef INFERENCEENGINE_JS_INPUT_INFO_H
+#define INFERENCEENGINE_JS_INPUT_INFO_H
 
 #include <napi.h>
 #include <inference_engine.hpp>
@@ -26,4 +26,4 @@ namespace InferenceEngineJS {
     };
 }
 
-#endif //INFERENCE_ENGINE_ADDON_IE_INPUT_INFO_H
+#endif //INFERENCEENGINE_JS_INPUT_INFO_H
