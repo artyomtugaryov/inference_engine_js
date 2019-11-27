@@ -13,4 +13,4 @@ console.log(`The network precision is  ${network.getPrecision()} `);
 console.log(`Input layer data has ${network.getInputsInfo()[0].data.getDims()} dimension.`);
 
 const ieCore = new ie.Core();
-const executableNetwork = ieCore.loadNetwork(ieNetwork, 'CPU');
+const executableNetwork = ieCore.loadNetwork(network, 'CPU');
