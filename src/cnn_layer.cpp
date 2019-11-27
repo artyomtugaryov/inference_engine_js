@@ -1,29 +1,29 @@
-#include "ie_layer.h"
+#include "cnn_layer.h"
 
 
-Napi::Object InferenceEngineJS::IELayer::Init(Napi::Env env, Napi::Object exports) {
-    Napi::Function func = DefineClass(env, "IELayer", {
-            InstanceMethod("getParamAsString", &IELayer::getParamAsString),
+Napi::Object InferenceEngineJS::CNNLayer::Init(Napi::Env env, Napi::Object exports) {
+    Napi::Function func = DefineClass(env, "CNNLayer", {
+            InstanceMethod("getParamAsString", &CNNLayer::getParamAsString),
     });
 
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();
-    exports.Set("IELayer", func);
+    exports.Set("CNNLayer", func);
     return exports;
 }
 
-InferenceEngineJS::IELayer::IELayer(const Napi::CallbackInfo &info) : Napi::ObjectWrap<IELayer>(info) {
+InferenceEngineJS::CNNLayer::CNNLayer(const Napi::CallbackInfo &info) : Napi::ObjectWrap<CNNLayer>(info) {
     if (info[0].IsUndefined()) {
         throw Napi::Error::New(info.Env(),
-                               "Set pointer to CNNLayer to InferenceEngineJS::IELayer constructor for initialize");
+                               "Set pointer to CNNLayer to InferenceEngineJS::CNNLayer constructor for initialize");
     }
     auto layerPtr = info[0].As<Napi::External<InferenceEngine::CNNLayer>>().Data();
     this->_ieCNNLayer = std::shared_ptr<InferenceEngine::CNNLayer>(layerPtr);
 }
 
-Napi::FunctionReference InferenceEngineJS::IELayer::constructor;
+Napi::FunctionReference InferenceEngineJS::CNNLayer::constructor;
 
-Napi::Value InferenceEngineJS::IELayer::getParamAsString(const Napi::CallbackInfo &info) {
+Napi::Value InferenceEngineJS::CNNLayer::getParamAsString(const Napi::CallbackInfo &info) {
     auto env = info.Env();
     auto paramName = std::string(info[0].ToString());
     std::string value;

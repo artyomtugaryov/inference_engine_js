@@ -2,14 +2,14 @@
 #define INFERENCE_ENGINE_ADDON_IE_INPUT_INFO_H
 
 #include <napi.h>
-#include <ie_input_info.hpp>
+#include <inference_engine.hpp>
 
 namespace InferenceEngineJS {
-    class IEInputInfo : public Napi::ObjectWrap<IEInputInfo> {
+    class InputInfo : public Napi::ObjectWrap<InputInfo> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        explicit IEInputInfo(const Napi::CallbackInfo &info);
+        explicit InputInfo(const Napi::CallbackInfo &info);
 
         static Napi::FunctionReference constructor;
 

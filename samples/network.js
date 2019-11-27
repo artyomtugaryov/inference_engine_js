@@ -2,15 +2,16 @@ const ie = require('bindings')('InferenceEngineJS');
 
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
-const ieNetwork = new ie.IENetwork(`${patToModel}xml`, `${patToModel}bin`);
+const network = new ie.CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
-console.log(`Batch size of the ${ieNetwork.getName()} network is ${ieNetwork.getBatchSize()}.`);
+console.log(`Batch size of the ${network.getName()} network is ${network.getBatchSize()}.`);
 
-console.log(`This network contains ${ieNetwork.size()} layers.`);
+console.log(`This network contains ${network.size()} layers.`);
 
-console.log(`The network precision is  ${ieNetwork.getPrecision()} `);
+console.log(`The network precision is  ${network.getPrecision()} `);
 
-console.log(`Input layer data has ${ieNetwork.getInputsInfo()[0].data.getDims()} dimension.`);
+console.log(`Input layer data has ${network.getInputsInfo()[0].data.getDims()} dimension.`);
 
-ieCore = new ie.IECore();
-ieCore.loadNetwork(ieNetwork, 'CPU');
+onst ieCore = new ie.Core();
+const executableNetwork = ieCore.loadNetwork(network, 'CPU');
+
