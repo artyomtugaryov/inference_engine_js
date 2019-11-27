@@ -1,5 +1,5 @@
-#ifndef INFERENCE_ENGINE_ADDON_IE_CORE_H
-#define INFERENCE_ENGINE_ADDON_IE_CORE_H
+#ifndef INFERENCEENGINE_JS_CORE_H
+#define INFERENCEENGINE_JS_CORE_H
 
 #include <vector>
 #include <array>
@@ -15,7 +15,7 @@ namespace InferenceEngineJS {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
-        Core(const Napi::CallbackInfo &info);
+        explicit Core(const Napi::CallbackInfo &info);
 
     private:
         static Napi::FunctionReference constructor;
@@ -42,4 +42,4 @@ namespace InferenceEngineJS {
     };
 }
 
-#endif //INFERENCE_ENGINE_ADDON_IE_CORE_H
+#endif //INFERENCEENGINE_JS_CORE_H

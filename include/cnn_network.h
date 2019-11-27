@@ -1,5 +1,5 @@
-#ifndef INFERENCE_ENGINE_ADDON_IE_NETWORK_H
-#define INFERENCE_ENGINE_ADDON_IE_NETWORK_H
+#ifndef INFERENCEENGINE_JS_CNN_NETWORK_H
+#define INFERENCEENGINE_JS_CNN_NETWORK_H
 
 #include <napi.h>
 
@@ -27,7 +27,7 @@ namespace InferenceEngineJS {
 
         Napi::Value getInputsInfo(const Napi::CallbackInfo &info);
 
-        InferenceEngine::CNNNetwork getCNNNetwork();
+        InferenceEngine::CNNNetwork* getCNNNetworkPtr();
 
     private:
         static Napi::FunctionReference constructor;
@@ -35,4 +35,4 @@ namespace InferenceEngineJS {
         InferenceEngine::CNNNetwork _ieNetwork;
     };
 }
-#endif //INFERENCE_ENGINE_ADDON_IE_NETWORK_H
+#endif //INFERENCEENGINE_JS_CNN_NETWORK_H

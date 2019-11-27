@@ -1,3 +1,6 @@
+#ifndef INFERENCE_ENGINE_JS_COMMON_H
+#define INFERENCE_ENGINE_JS_COMMON_H
+
 #include <napi.h>
 #include <ie_core.hpp>
 
@@ -26,3 +29,4 @@ namespace InferenceEngineJS {
 
     InferenceEngine::Layout layoutFromString(const std::string& layout);
 }
+#endif //INFERENCE_ENGINE_JS_COMMON_H

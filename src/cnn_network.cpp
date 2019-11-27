@@ -82,6 +82,6 @@ Napi::Value InferenceEngineJS::CNNNetwork::getInputsInfo(const Napi::CallbackInf
     return result;
 }
 
-InferenceEngine::CNNNetwork InferenceEngineJS::CNNNetwork::getCNNNetwork(){
-    return this->_ieNetwork;
+InferenceEngine::CNNNetwork* InferenceEngineJS::CNNNetwork::getCNNNetworkPtr(){
+    return &(this->_ieNetwork);
 }
