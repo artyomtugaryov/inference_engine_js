@@ -1,8 +1,9 @@
-#include <blob.h>
+#include "blob.h"
 #include "infer_request.h"
 
 Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "InferRequest", {
+            InstanceMethod("getBlob", &InferRequest::getBlob),
     });
 
     constructor = Napi::Persistent(func);
