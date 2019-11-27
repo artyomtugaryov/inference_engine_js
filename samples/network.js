@@ -11,3 +11,6 @@ console.log(`This network contains ${ieNetwork.size()} layers.`);
 console.log(`The network precision is  ${ieNetwork.getPrecision()} `);
 
 console.log(`Input layer data has ${ieNetwork.getInputsInfo()[0].data.getDims()} dimension.`);
+
+ieCore = new ie.IECore();
+ieCore.loadNetwork(ieNetwork);
