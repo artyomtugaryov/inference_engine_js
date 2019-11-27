@@ -117,6 +117,7 @@ void InferenceEngineJS::IECore::registerPlugins(const Napi::CallbackInfo &info) 
 }
 
 Napi::Value InferenceEngineJS::IECore::loadNetwork(const Napi::CallbackInfo &info){
+    auto env = info.Env();
     if (info[0].IsUndefined()) {
         throw Napi::Error::New(info.Env(), "Set IENetwork to InferenceEngineJS::IECore loadNetwork for initialize");
     }
@@ -126,6 +127,6 @@ Napi::Value InferenceEngineJS::IECore::loadNetwork(const Napi::CallbackInfo &inf
     auto ieNetworkPTtr = Napi::ObjectWrap<IENetwork>::Unwrap(info[0].As<Napi::Object>());
     auto device = std::string(info[1].ToString());
     auto execNetwork = this->_ieCore->LoadNetwork(ieNetworkPTtr->getCNNNetwork(), device);
-    auto IEExecNetwork::constructor.New({Napi::External<IEExecNetwork>::New(env, execNetwork.get())});
-    return Napi::String::New(info.Env(), "");
+    auto execNetworkObject = IEExecNetwork::constructor.New({Napi::External<InferenceEngine::ExecutableNetwork>::New(env, &execNetwork)});
+    return execNetworkObject;
 }

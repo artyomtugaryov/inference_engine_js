@@ -74,10 +74,10 @@ Napi::Value InferenceEngineJS::IENetwork::getInputsInfo(const Napi::CallbackInfo
     auto inputsDataMap = this->_ieNetwork.getInputsInfo();
     Napi::Array result = Napi::Array::New(env, inputsDataMap.size());
     std::size_t i = 0;
-    for (auto inputInfo: inputsDataMap) {
+    for (const auto& inputInfo: inputsDataMap) {
         auto inputInfoPtr = inputInfo.second;
-        auto obj = Napi::Object::New(env);
         auto ieInputInfo = IEInputInfo::constructor.New({Napi::External<InputInfo>::New(env, inputInfoPtr.get())});
+        auto obj = Napi::Object::New(env);
         obj.Set(inputInfo.first, ieInputInfo);
         result[i++] = obj;
     }

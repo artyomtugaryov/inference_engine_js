@@ -13,8 +13,8 @@ namespace InferenceEngineJS {
 
         IEExecNetwork(const Napi::CallbackInfo &info);
 
-    private:
         static Napi::FunctionReference constructor;
+    private:
 
         InferenceEngine::ExecutableNetwork::Ptr _ieExecNetworkPtr;
 
