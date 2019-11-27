@@ -13,10 +13,10 @@ namespace InferenceEngineJS {
     }
 
     template<class T, class K>
-    const Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T, T> &tpl);
+    Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T, T> &tpl);
 
     template<class T, class K>
-    const Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T> &tpl);
+    Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T> &tpl);
 
     Napi::Value parseParameter(const Napi::Env &env, const InferenceEngine::Parameter &param);
 

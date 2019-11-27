@@ -16,28 +16,28 @@ Napi::Value InferenceEngineJS::parseParameter(const Napi::Env &env, const Infere
         auto val = param.as<bool>();
         return Napi::Boolean::New(env, static_cast<bool>(val));
     } else if (param.is<std::vector<std::string>>()) {
-        auto vec = param.as<std::vector<std::string>>();
+        const auto&  vec = param.as<std::vector<std::string>>();
         return vectorToNapiArray<std::string, Napi::String>(env, vec);
     } else if (param.is<std::vector<int>>()) {
-        auto vec = param.as<std::vector<int>>();
+        const auto& vec = param.as<std::vector<int>>();
         return vectorToNapiArray<int, Napi::Number>(env, vec);
     } else if (param.is<std::vector<unsigned int>>()) {
-        auto vec = param.as<std::vector<unsigned int>>();
+        const auto&  vec = param.as<std::vector<unsigned int>>();
         return vectorToNapiArray<unsigned int, Napi::Number>(env, vec);
     } else if (param.is<std::tuple<int, int >>()) {
-        auto tpl = param.as<std::tuple<int, int >>();
+        const auto&  tpl = param.as<std::tuple<int, int >>();
         return tupleToNapiArray<int, Napi::Number>(env, tpl);
     } else if (param.is<std::tuple<int, int, int >>()) {
-        auto tpl = param.as<std::tuple<int, int, int >>();
+        const auto&  tpl = param.as<std::tuple<int, int, int >>();
         return tupleToNapiArray<int, Napi::Number>(env, tpl);
     } else if (param.is<std::tuple<unsigned int, unsigned int >>()) {
-        auto tpl = param.as<std::tuple<unsigned int, unsigned int >>();
+        const auto&  tpl = param.as<std::tuple<unsigned int, unsigned int >>();
         return tupleToNapiArray<unsigned int, Napi::Number>(env, tpl);
     } else if (param.is<std::tuple<unsigned int, unsigned int, unsigned int >>()) {
-        auto tpl = param.as<std::tuple<unsigned int, unsigned int, unsigned int >>();
+        const auto&  tpl = param.as<std::tuple<unsigned int, unsigned int, unsigned int >>();
         return tupleToNapiArray<unsigned int, Napi::Number>(env, tpl);
     } else if (param.is<std::map<std::string, std::string>>()) {
-        auto tpl = param.as<std::tuple<std::string, std::string >>();
+        const auto&  tpl = param.as<std::tuple<std::string, std::string >>();
         return tupleToNapiArray<std::string, Napi::String>(env, tpl);
     } else if (param.is<std::map<std::string, int>>()) {
         auto dict = param.as<std::map<std::string, int>>();
@@ -52,11 +52,12 @@ Napi::Value InferenceEngineJS::parseParameter(const Napi::Env &env, const Infere
         return result;
     }
 
-    throw Napi::Error::New(env, "Cannot parse argument");
+    Napi::Error::New(env, "Cannot parse argument").ThrowAsJavaScriptException();
+    return env.Undefined();
 }
 
 template<class T, class K>
-const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T, T> &tpl) {
+Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T, T> &tpl) {
     Napi::Array result = Napi::Array::New(env, 3);
     std::size_t i = 0;
     result[i++] = K::New(env, static_cast<T>(std::get<0>(tpl)));
@@ -66,7 +67,7 @@ const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env &env, cons
 }
 
 template<class T, class K>
-const Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T> &tpl) {
+Napi::Array InferenceEngineJS::tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T> &tpl) {
     Napi::Array result = Napi::Array::New(env, 2);
     std::size_t i = 0;
     result[i++] = K::New(env, static_cast<T>(std::get<0>(tpl)));
@@ -107,4 +108,5 @@ InferenceEngine::Layout InferenceEngineJS::layoutFromString(const std::string &l
     if (layout == std::string("CHW")){
         return InferenceEngine::Layout::CHW;
     }
+    return InferenceEngine::Layout::ANY;
 }

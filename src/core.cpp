@@ -119,10 +119,12 @@ void InferenceEngineJS::Core::registerPlugins(const Napi::CallbackInfo &info) {
 Napi::Value InferenceEngineJS::Core::loadNetwork(const Napi::CallbackInfo &info){
     auto env = info.Env();
     if (info[0].IsUndefined()) {
-        throw Napi::Error::New(info.Env(), "Set CNNNetwork to InferenceEngineJS::Core loadNetwork for initialize");
+        Napi::Error::New(info.Env(), "Set CNNNetwork to InferenceEngineJS::Core loadNetwork for initialize").ThrowAsJavaScriptException();
+        return env.Undefined();
     }
     if (info[1].IsUndefined()) {
-        throw Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::Core loadNetwork for load Network");
+        Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::Core loadNetwork for load Network").ThrowAsJavaScriptException();
+        return env.Undefined();
     }
     auto ieNetworkPTtr = Napi::ObjectWrap<CNNNetwork>::Unwrap(info[0].As<Napi::Object>());
     auto device = std::string(info[1].ToString());

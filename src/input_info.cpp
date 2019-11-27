@@ -16,8 +16,8 @@ Napi::Object InferenceEngineJS::InputInfo::Init(Napi::Env env, Napi::Object expo
 
 InferenceEngineJS::InputInfo::InputInfo(const Napi::CallbackInfo &info) : Napi::ObjectWrap<InputInfo>(info) {
     if (info[0].IsUndefined()) {
-        throw Napi::Error::New(info.Env(),
-                               "Set pointer to InputInfo to InferenceEngineJS::InputInfo constructor for initialize");
+        Napi::Error::New(info.Env(),"Set pointer to InputInfo to InferenceEngineJS::InputInfo constructor for initialize").ThrowAsJavaScriptException();
+        return;
     }
     auto layerPtr = info[0].As<Napi::External<InferenceEngine::InputInfo>>().Data();
     this->_ieInputInfo = std::shared_ptr<InferenceEngine::InputInfo>(layerPtr);
