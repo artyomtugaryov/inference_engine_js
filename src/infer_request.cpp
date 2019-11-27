@@ -1,3 +1,4 @@
+#include <blob.h>
 #include "infer_request.h"
 
 Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object exports) {
@@ -20,3 +21,15 @@ InferenceEngineJS::InferRequest::InferRequest(const Napi::CallbackInfo &info) : 
 }
 
 Napi::FunctionReference InferenceEngineJS::InferRequest::constructor;
+
+Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &info){
+    auto env = info.Env();
+    if (info[0].IsUndefined()) {
+        Napi::Error::New(info.Env(), "Set name of blob to InferRequest::getBlob").ThrowAsJavaScriptException();
+        return env.Undefined();
+    }
+    auto blobName = std::string(info[0].As<Napi::String>());
+    auto blobPtr = this->_inferRequestPtr->GetBlob(blobName);
+    auto blobObj = InferenceEngineJS::Blob::constructor.New({Napi::External<InferenceEngine::Blob>::New(env, blobPtr.get())});
+    return blobObj;
+}

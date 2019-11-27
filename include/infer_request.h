@@ -13,6 +13,9 @@ namespace InferenceEngineJS {
         static Napi::FunctionReference constructor;
 
         explicit InferRequest(const Napi::CallbackInfo &info);
+
+        Napi::Value getBlob(const Napi::CallbackInfo &info);
+
     private:
         InferenceEngine::InferRequest::Ptr _inferRequestPtr;
     };
