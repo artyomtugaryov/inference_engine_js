@@ -25,6 +25,10 @@ namespace InferenceEngineJS {
 
         Napi::Value getLayerByName(const Napi::CallbackInfo &info);
 
+        Napi::Value getInputsInfo(const Napi::CallbackInfo &info);
+
+        InferenceEngine::CNNNetwork getCNNNetwork();
+
     private:
         static Napi::FunctionReference constructor;
 

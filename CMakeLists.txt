@@ -6,7 +6,7 @@ set(CMAKE_CXX_STANDARD 11)
 
 find_package(InferenceEngine 2.1 REQUIRED)
 
-include_directories("${CMAKE_SOURCE_DIR}/include"
+include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
                     "${InferenceEngine_INCLUDE_DIRS}"
                     "${CMAKE_CURRENT_SOURCE_DIR}/node_modules/node-addon-api"
                     "${CMAKE_CURRENT_SOURCE_DIR}/node_modules/node-addon-api/src")
@@ -24,4 +24,3 @@ set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
 set_target_properties(${PROJECT_NAME} PROPERTIES LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build")
 
 target_link_libraries(${PROJECT_NAME} PRIVATE ${InferenceEngine_LIBRARIES})
-

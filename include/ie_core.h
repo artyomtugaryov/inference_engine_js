@@ -8,7 +8,7 @@
 
 #include <ie_core.hpp>
 
-#include "common.hpp"
+#include "common.h"
 
 namespace InferenceEngineJS {
     class IECore : public Napi::ObjectWrap<IECore> {
@@ -20,7 +20,7 @@ namespace InferenceEngineJS {
     private:
         static Napi::FunctionReference constructor;
 
-        std::shared_ptr<InferenceEngine::Core> _ie_core;
+        std::shared_ptr<InferenceEngine::Core> _ieCore;
 
         Napi::Value getVersion(const Napi::CallbackInfo &info);
 
@@ -37,6 +37,8 @@ namespace InferenceEngineJS {
         void registerPlugins(const Napi::CallbackInfo &info);
 
         void unregisterPlugin(const Napi::CallbackInfo &info);
+
+        Napi::Value loadNetwork(const Napi::CallbackInfo &info);
     };
 }
 
