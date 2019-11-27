@@ -14,8 +14,7 @@ Napi::Object InferenceEngineJS::CNNLayer::Init(Napi::Env env, Napi::Object expor
 
 InferenceEngineJS::CNNLayer::CNNLayer(const Napi::CallbackInfo &info) : Napi::ObjectWrap<CNNLayer>(info) {
     if (info[0].IsUndefined()) {
-        throw Napi::Error::New(info.Env(),
-                               "Set pointer to CNNLayer to InferenceEngineJS::CNNLayer constructor for initialize");
+        Napi::Error::New(info.Env(),"Set pointer to CNNLayer to InferenceEngineJS::CNNLayer constructor for initialize");
     }
     auto layerPtr = info[0].As<Napi::External<InferenceEngine::CNNLayer>>().Data();
     this->_ieCNNLayer = std::shared_ptr<InferenceEngine::CNNLayer>(layerPtr);

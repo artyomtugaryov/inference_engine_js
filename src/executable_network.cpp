@@ -18,8 +18,8 @@ Napi::Object InferenceEngineJS::ExecutableNetwork::Init(Napi::Env env, Napi::Obj
 
 InferenceEngineJS::ExecutableNetwork::ExecutableNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<ExecutableNetwork>(info) {
     if (info[0].IsUndefined()) {
-        throw Napi::Error::New(info.Env(),
-                               "Set pointer to ExecNetworkPtr to InferenceEngineJS::IEEexecNetwork constructor for initialize");
+        Napi::Error::New(info.Env(), "Set pointer to ExecNetworkPtr to InferenceEngineJS::IEEexecNetwork constructor for initialize").ThrowAsJavaScriptException();
+        return;
     }
     auto execNetworkPtr = info[0].As<Napi::External<InferenceEngine::ExecutableNetwork>>().Data();
     this->_ieExecNetworkPtr = std::shared_ptr<InferenceEngine::ExecutableNetwork>(execNetworkPtr);
