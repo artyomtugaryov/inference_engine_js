@@ -1,3 +1,4 @@
+#include <ie_exec_network.h>
 #include "ie_network.h"
 #include "ie_core.h"
 
@@ -117,15 +118,14 @@ void InferenceEngineJS::IECore::registerPlugins(const Napi::CallbackInfo &info) 
 
 Napi::Value InferenceEngineJS::IECore::loadNetwork(const Napi::CallbackInfo &info){
     if (info[0].IsUndefined()) {
-        throw Napi::Error::New(info.Env(), "Set pointer to IENetwork to InferenceEngineJS::IECore loadNetwork for initialize");
+        throw Napi::Error::New(info.Env(), "Set IENetwork to InferenceEngineJS::IECore loadNetwork for initialize");
     }
-    std::size_t argc = 2;
-    Napi::Value args[2];
-    auto status = napi_get_cb_info(info.Env(), info, &argc, args, nullptr, nullptr);
-    std::cout<< typeid(info[0]).name()<<std::endl;
+    if (info[1].IsUndefined()) {
+        throw Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::IECore loadNetwork for load Network");
+    }
+    auto ieNetworkPTtr = Napi::ObjectWrap<IENetwork>::Unwrap(info[0].As<Napi::Object>());
     auto device = std::string(info[1].ToString());
-//    auto ieNetworkObject = info[0].As<IENetwork>();
-//    std::cout<< typeid(ieNetworkObject).name()<<std::endl;
-//    auto ieExecNetwork = this->_ieCore->LoadNetwork(, device);
+    auto execNetwork = this->_ieCore->LoadNetwork(ieNetworkPTtr->getCNNNetwork(), device);
+    auto IEExecNetwork::constructor.New({Napi::External<IEExecNetwork>::New(env, execNetwork.get())});
     return Napi::String::New(info.Env(), "");
 }
