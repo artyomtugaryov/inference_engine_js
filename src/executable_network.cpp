@@ -42,7 +42,9 @@ Napi::FunctionReference InferenceEngineJS::ExecutableNetwork::constructor;
 
 Napi::Value InferenceEngineJS::ExecutableNetwork::createInferRequest(const Napi::CallbackInfo &info){
     auto env = info.Env();
-    auto inferRequest = this->_ieExecNetwork.CreateInferRequest();
-    auto inferRequestObj = InferenceEngineJS::InferRequest::constructor.New({Napi::External<InferenceEngine::InferRequest>::New(env, &inferRequest)});
+    auto inferRequestPtr = this->_ieExecNetwork.CreateInferRequestPtr();
+    auto inferRequestObj = InferenceEngineJS::InferRequest::constructor.New({
+        Napi::External<InferenceEngine::InferRequest>::New(env, inferRequestPtr.get())
+    });
     return inferRequestObj;
 }
