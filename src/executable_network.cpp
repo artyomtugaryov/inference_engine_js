@@ -9,6 +9,8 @@ using namespace Napi;
 
 Napi::Object InferenceEngineJS::ExecutableNetwork::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "ExecutableNetwork", {
+            InstanceMethod("createInferRequest", &ExecutableNetwork::createInferRequest),
+
     });
 
     constructor = Napi::Persistent(func);

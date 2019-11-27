@@ -14,4 +14,4 @@ console.log(`Input layer data has ${network.getInputsInfo()[0].data.getDims()} d
 
 const ieCore = new ie.Core();
 const executableNetwork = ieCore.loadNetwork(network, 'CPU');
-
+const inferRequest = executableNetwork.createInferRequest();
