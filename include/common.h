@@ -6,7 +6,7 @@
 
 namespace InferenceEngineJS {
     template<class InputType, class OutputType>
-    const Napi::Array vectorToNapiArray(const Napi::Env &env, const std::vector<InputType> &vec){
+    Napi::Array vectorToNapiArray(const Napi::Env &env, const std::vector<InputType> &vec){
         Napi::Array result = Napi::Array::New(env);
         int size = vec.size();
         for (std::size_t i = 0; i < size; i++) {

@@ -4,6 +4,7 @@
 #include "cnn_layer.h"
 #include "cnn_network.h"
 #include "core.h"
+#include "data.h"
 #include "executable_network.h"
 #include "infer_request.h"
 #include "input_info.h"
@@ -16,6 +17,7 @@ Napi::Object Init (Napi::Env env, Napi::Object exports) {
     InferenceEngineJS::ExecutableNetwork::Init(env, exports);
     InferenceEngineJS::InferRequest::Init(env, exports);
     InferenceEngineJS::InputInfo::Init(env, exports);
+    InferenceEngineJS::Data::Init(env, exports);
     return exports;
 }
 

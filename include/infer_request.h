@@ -16,6 +16,11 @@ namespace InferenceEngineJS {
 
         Napi::Value getBlob(const Napi::CallbackInfo &info);
 
+        void startAsync(const Napi::CallbackInfo &info);
+
+        void setCompletionCallback(const Napi::CallbackInfo &info);
+
+        void infer(const Napi::CallbackInfo &info);
     private:
         InferenceEngine::InferRequest::Ptr _inferRequestPtr;
     };

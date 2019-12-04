@@ -3,6 +3,7 @@
 
 #include "cnn_network.h"
 #include "input_info.h"
+#include "data.h"
 
 Napi::Object InferenceEngineJS::CNNNetwork::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "CNNNetwork", {
@@ -14,6 +15,7 @@ Napi::Object InferenceEngineJS::CNNNetwork::Init(Napi::Env env, Napi::Object exp
             InstanceMethod("size", &CNNNetwork::layerCount),
             InstanceMethod("getLayerByName", &CNNNetwork::getLayerByName),
             InstanceMethod("getInputsInfo", &CNNNetwork::getInputsInfo),
+            InstanceMethod("getOutputsInfo", &CNNNetwork::getOutputsInfo),
     });
 
     constructor = Napi::Persistent(func);
@@ -76,6 +78,22 @@ Napi::Value InferenceEngineJS::CNNNetwork::getInputsInfo(const Napi::CallbackInf
         auto ieInputInfo = InputInfo::constructor.New({Napi::External<InferenceEngine::InputInfo>::New(env, inputInfoPtr.get())});
         auto obj = Napi::Object::New(env);
         obj.Set(inputInfo.first, ieInputInfo);
+        result[i++] = obj;
+    }
+
+    return result;
+}
+
+Napi::Value InferenceEngineJS::CNNNetwork::getOutputsInfo(const Napi::CallbackInfo &info) {
+    auto env = info.Env();
+    auto outputsDataMap = this->_ieNetwork.getOutputsInfo();
+    Napi::Array result = Napi::Array::New(env, outputsDataMap.size());
+    std::size_t i = 0;
+    for (const auto& inputInfo: outputsDataMap) {
+        auto dataPtr = inputInfo.second;
+        auto ieDataPtr = Data::constructor.New({Napi::External<InferenceEngine::Data>::New(env, dataPtr.get())});
+        auto obj = Napi::Object::New(env);
+        obj.Set(inputInfo.first, ieDataPtr);
         result[i++] = obj;
     }
 

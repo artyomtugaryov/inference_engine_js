@@ -27,6 +27,8 @@ namespace InferenceEngineJS {
 
         Napi::Value getInputsInfo(const Napi::CallbackInfo &info);
 
+        Napi::Value getOutputsInfo(const Napi::CallbackInfo &info);
+
         InferenceEngine::CNNNetwork* getCNNNetworkPtr();
 
     private:

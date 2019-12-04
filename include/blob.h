@@ -16,7 +16,11 @@ namespace InferenceEngineJS {
 
         Napi::Value getDims(const Napi::CallbackInfo &info);
 
-    private:
+        void fillImageAsU8(const Napi::CallbackInfo &info);
+
+        Napi::Value getTopClassificationResults(const Napi::CallbackInfo &info);
+
+        private:
 
         InferenceEngine::Blob::Ptr _ieBlobPtr;
 
