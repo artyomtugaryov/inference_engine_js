@@ -36,7 +36,7 @@ void InferenceEngineJS::Blob::fillImageAsU8(const Napi::CallbackInfo &info) {
     using myBlobType = InferenceEngine::PrecisionTrait<InferenceEngine::Precision::U8>::value_type *;
     auto blobData = this->_ieBlobPtr->buffer().as<myBlobType>();
     for (unsigned int i = 0; i < inputData.Length(); i++) {
-        blobData[i] = (unsigned int)(inputData.Get(i).As<Napi::Number>());
+        blobData[i] = static_cast<unsigned int>((inputData.Get(i).As<Napi::Number>()));
     }
 }
 

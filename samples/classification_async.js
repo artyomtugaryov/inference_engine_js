@@ -1,4 +1,5 @@
 const cv = require('opencv4nodejs');
+const { flattenDeep } = require('lodash');
 const {Core, CNNNetwork} = require('bindings')('InferenceEngineJS');
 
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
@@ -25,8 +26,7 @@ console.log(`Found input layer ${inputLayerName}`);
 inputLayer.setPrecision('U8');
 inputLayer.setLayout('NCHW');
 
-//TODO: Read images
-const mat = cv.imread(process.env.IMAGE_PATH);
+const sourceImage = cv.imread(process.env.IMAGE_PATH);
 
 network.setBatchSize(1);
 
@@ -37,26 +37,17 @@ const inferRequest = executableNetwork.createInferRequest();
 const outputInfo = network.getOutputsInfo();
 const outputLayerName = Object.keys(outputInfo[0])[0];
 
-function toArray(array) {
-    let result=[], stack=[], p;
-    stack.push(array);
-    while (stack.length !== 0) {
-        p = stack.pop();
-        if (Array.isArray(p)) {
-            stack = stack.concat(p);
-        } else {
-            result.push(p);
-        }
-    }
-    return result.reverse();
+function toBGRArray(arrayOfArrays) {
+    const bgrArrayOfArrays = arrayOfArrays.map((pixelsArray) => pixelsArray.map((pixelRGBArray) => pixelRGBArray.reverse()));
+    return flattenDeep(bgrArrayOfArrays);
 }
 
 for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     const inputLayerName = Object.keys(inputInfo)[0];
     const inputBlob = inferRequest.getBlob(inputLayerName);
     const dims = inputBlob.getDims();
-    const image = mat.resize(dims[2], dims[3]);
-    let data = toArray(image.getDataAsArray());
+    const image = sourceImage.resize(dims[2], dims[3]);
+    const data = toBGRArray(image.getDataAsArray());
     inputBlob.fillImageAsU8(data);
 }
 
