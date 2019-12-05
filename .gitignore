@@ -16,4 +16,4 @@ build/
 thread.info
 
 #Cmake
-cmake-build-*/
+cmake-build*/

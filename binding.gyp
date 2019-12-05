@@ -14,11 +14,15 @@
       ],
       "target_name": "InferenceEngineAddon",
       "sources": [
+        "src/blob.cpp",
+        "src/cnn_layer.cpp",
+        "src/cnn_network.cpp",
         "src/common.cpp",
-        "src/ie_core.cpp",
-        "src/ie_layer.cpp",
-        "src/ie_network.cpp",
-        "src/init.cpp"
+        "src/core.cpp",
+        "src/executable_network.cpp",
+        "src/infer_request.cpp",
+        "src/init.cpp",
+        "src/input_info.cpp"
        ],
       'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ]
     }
