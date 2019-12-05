@@ -45,7 +45,7 @@ function toCHWArray(image) {
     for (let w = 0; w < width; w++) {
         for (let h = 0; h < height; h++) {
             const pixel = image.at(h, w);
-            const rgb = [pixel.z, pixel.y, pixel.x].reverse();
+            const rgb = [pixel.x, pixel.y, pixel.z];
             for (let c = 0; c < channels; c++) {
                 result[c * height * width + h * height + w] = rgb[c];
             }
@@ -67,5 +67,5 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
 inferRequest.infer();
 
 constoutputBlob = inferRequest.getBlob(outputLayerName);
-constoutputBlob.getTopClassificationResults(10);
+constoutputBlob.getTopClassificationResults(100);
 console.log('done');
