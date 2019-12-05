@@ -6,10 +6,10 @@ const availableDevices = ieCore.getAvailableDevices();
 
 
 console.log('Available devices:');
-for (device of availableDevices) {
+for (let device of availableDevices) {
     console.log("\tDevice: ", device);
     console.log("\tMetrics:");
-    for (supportedMetricName of ieCore.getMetric(device, 'SUPPORTED_METRICS')) {
+    for (let supportedMetricName of ieCore.getMetric(device, 'SUPPORTED_METRICS')) {
         try {
             const metric = ieCore.getMetric(device, supportedMetricName);
             console.log(`\t\t${supportedMetricName}: ${metric}`);

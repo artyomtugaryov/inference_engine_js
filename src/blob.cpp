@@ -65,7 +65,7 @@ Napi::Value InferenceEngineJS::Blob::getClassificationResult(const Napi::Callbac
         blobType *batchData = blob.data();
         batchData += offset;
 
-        for (auto j = 0; j < dims[1]; j++) {
+        for (std::size_t j = 0; j < dims[1]; j++) {
             bachArray[j] = Napi::Number::New(env, batchData[j]);
         }
 

@@ -1,5 +1,10 @@
 const cv = require('opencv4nodejs');
+const {size} = require('lodash');
 const {Core, CNNNetwork} = require('bindings')('InferenceEngineJS');
+
+if (!process.env.MODELS_PATH) {
+    throw Error('"MODELS_PATH" environment variable is not set');
+}
 
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
@@ -11,11 +16,12 @@ const network = new CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 let inputInfo = network.getInputsInfo();
 
-if (Object.keys(inputInfo).length > 1) {
+if (size(Object.keys(inputInfo)) > 1) {
     throw Error('Sample supports topologies with 1 input only');
 }
 
 inputInfo = inputInfo[0];
+
 
 const inputLayerName = Object.keys(inputInfo)[0];
 const inputLayer = inputInfo[inputLayerName];
@@ -36,7 +42,7 @@ const inferRequest = executableNetwork.createInferRequest();
 const outputInfo = network.getOutputsInfo();
 const outputLayerName = Object.keys(outputInfo[0])[0];
 
-function toCHWArray(image) {
+function toCHWArray(image: cv.Mat) {
     const result = [];
     const height = image.rows;
     const width = image.cols;
@@ -53,7 +59,7 @@ function toCHWArray(image) {
     return result;
 }
 
-function printClassificationResult(inferResultForImage, topNumber = 10) {
+function printClassificationResult(inferResultForImage: cv.Mat, topNumber: number = 10) {
     const indices = [];
 
     for (let i = 0; i < inferResultForImage.length; ++i) {
@@ -84,9 +90,9 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
 
 inferRequest.infer();
 
-constoutputBlob = inferRequest.getBlob(outputLayerName);
+const constOutputBlob = inferRequest.getBlob(outputLayerName);
 
-const inferResults = constoutputBlob.getClassificationResult();
+const inferResults = constOutputBlob.getClassificationResult();
 
 for (let batch = 0; batch < inferResults.length; ++batch) {
 

@@ -7,18 +7,22 @@
       "include_dirs" : [
         "<!@(node -p \"require('node-addon-api').include\")",
         "include",
-        "$INTEL_OPENVINO_DIR/deployment_tools/inference_engine/include"
+        "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/include"
       ],
       "libraries": [
-        "$INTEL_OPENVINO_DIR/deployment_tools/inference_engine/lib/intel64/libinference_engine.so"
+        "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/lib/intel64/libinference_engine.so"
       ],
-      "target_name": "InferenceEngineAddon",
+      "target_name": "InferenceEngineJS",
       "sources": [
+        "src/blob.cpp",
+        "src/cnn_layer.cpp",
+        "src/cnn_network.cpp",
         "src/common.cpp",
-        "src/ie_core.cpp",
-        "src/ie_layer.cpp",
-        "src/ie_network.cpp",
-        "src/init.cpp"
+        "src/core.cpp",
+        "src/executable_network.cpp",
+        "src/infer_request.cpp",
+        "src/init.cpp",
+        "src/input_info.cpp"
        ],
       'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ]
     }
