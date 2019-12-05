@@ -1,19 +1,21 @@
 {
-  "name": "inference_engine_node_api",
+  "name": "inference_engine_js",
   "version": "0.0.1",
-  "description": "OpenVINO Inference Engine Node API addon",
+  "description": "OpenVINO Inference Engine NodeJS API",
   "repository": {
     "type": "git",
-    "url": "git://github.com/artyomtugaryov/inference_engine_node_api.git"
+    "url": "git://github.com/artyomtugaryov/inference_engine_js.git"
   },
   "main": "sample.js",
   "scripts": {
     "build": "node-gyp rebuild",
-    "sample:hello-query-device": "node samples/hello_query_device.js",
-    "sample:network-information": "node samples/network_information.js",
-    "sample:classification-async": "node samples/classification-async.js"
+    "tsc": "tsc",
+    "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
+    "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js",
+    "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
+    "prod:sample:network-information": "tsc && node ./js-build/network_information.js"
   },
-  "author": "",
+  "author": "Artyom Tugaryov, Yaroslav Tarkan",
   "license": "ISC",
   "dependencies": {
     "bindings": "^1.5.0",
@@ -21,5 +23,16 @@
     "lodash": "^4.17.15",
     "node-addon-api": "^1.7.1",
     "node-gyp": "^6.0.0"
+  },
+  "devDependencies": {
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^12.12.14",
+    "@typescript-eslint/eslint-plugin": "^2.10.0",
+    "@typescript-eslint/parser": "^2.10.0",
+    "eslint": "^6.7.2",
+    "eslint-config-airbnb-typescript": "^6.3.1",
+    "eslint-plugin-import": "^2.18.2",
+    "ts-node-dev": "^1.0.0-pre.44",
+    "typescript": "^3.7.3"
   }
 }

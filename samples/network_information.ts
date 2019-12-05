@@ -1,5 +1,9 @@
 const ie = require('bindings')('InferenceEngineJS');
 
+if (!process.env.MODELS_PATH) {
+    throw Error('"MODELS_PATH" environment variable is not set');
+}
+
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
 const network_information = new ie.CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);

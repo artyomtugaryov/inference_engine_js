@@ -12,8 +12,11 @@ node_modules/
 
 build/
 
-#InferenceEngine
+# InferenceEngine
 thread.info
 
-#Cmake
+# Cmake
 cmake-build*/
+
+# Typescript
+js-build

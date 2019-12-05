@@ -18,7 +18,7 @@ source $INTEL_OPENVINO_DIR/bin/setupvars.sh
 ### Build the addon. 
 You can build the addon with `node-gyp` or `cmake`.
 #### To build the addon with `node-gyp` you should:
-1. Replace `$INTEL_OPENVINO_DIR` with path to your OpenVINO package in `binding.gyp`.
+1. Set `$INTEL_OPENVINO_DIR` environment variable with path to your OpenVINO package.
 2. Run the following command in the terminal
     ```console
     npm run build
