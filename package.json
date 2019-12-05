@@ -1,7 +1,7 @@
 {
-  "name": "inference_engine_node_api",
+  "name": "inference_engine_js",
   "version": "0.0.1",
-  "description": "OpenVINO Inference Engine Node API addon",
+  "description": "OpenVINO Inference Engine NodeJS API",
   "repository": {
     "type": "git",
     "url": "git://github.com/artyomtugaryov/inference_engine_node_api.git"
@@ -12,7 +12,9 @@
     "sample:hello-query-device": "node samples/hello_query_device.js",
     "sample:network-information": "node samples/network_information.js",
     "sample:classification-async": "node samples/classification-async.js",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
+    "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js"
   },
   "author": "",
   "license": "ISC",
@@ -24,6 +26,9 @@
     "node-gyp": "^6.0.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.149",
+    "@types/node": "^12.12.14",
+    "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.3"
   }
 }
