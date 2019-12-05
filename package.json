@@ -4,7 +4,7 @@
   "description": "OpenVINO Inference Engine NodeJS API",
   "repository": {
     "type": "git",
-    "url": "git://github.com/artyomtugaryov/inference_engine_node_api.git"
+    "url": "git://github.com/artyomtugaryov/inference_engine_js.git"
   },
   "main": "sample.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
     "prod:sample:network-information": "tsc && node ./js-build/network_information.js"
   },
-  "author": "",
+  "author": "Artyom Tugaryov, Yaroslav Tarkan",
   "license": "ISC",
   "dependencies": {
     "bindings": "^1.5.0",
