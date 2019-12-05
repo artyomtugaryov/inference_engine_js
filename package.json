@@ -1,19 +1,19 @@
 {
-  "name": "inference_engine_node_api",
+  "name": "inference-engine-js",
   "version": "0.0.1",
   "description": "OpenVINO Inference Engine Node API addon",
   "repository": {
     "type": "git",
-    "url": "git://github.com/artyomtugaryov/inference_engine_node_api.git"
+    "url": "git://github.com/artyomtugaryov/inference_engine_js.git"
   },
   "main": "sample.js",
   "scripts": {
     "build": "node-gyp rebuild",
     "sample:hello-query-device": "node samples/hello_query_device.js",
-    "sample:network-information": "node samples/network_information.js",
-    "sample:classification-async": "node samples/classification_async.js"
+    "sample:hello-classification": "node samples/hello_classification.js",
+    "sample:network-information": "node samples/network_information.js"
   },
-  "author": "",
+  "author": "Artyom Tugaryov (artyom.tugaryov@gmail.com) and Yaroslav Tarkan",
   "license": "ISC",
   "dependencies": {
     "bindings": "^1.5.0",
