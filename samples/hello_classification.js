@@ -1,5 +1,4 @@
 const cv = require('opencv4nodejs');
-const {flattenDeep, flatten} = require('lodash');
 const {Core, CNNNetwork} = require('bindings')('InferenceEngineJS');
 
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
@@ -54,6 +53,25 @@ function toCHWArray(image) {
     return result;
 }
 
+function printClassificationResult(inferResultForImage, topNumber = 10) {
+    const indices = [];
+
+    for (let i = 0; i < inferResultForImage.length; ++i) {
+        indices[i] = i;
+    }
+
+    const sortedClasses = indices
+        .map((item, index) => [inferResultForImage[index], item])
+        .sort(([count1], [count2]) => count2 - count1)
+        .map(([, item]) => item);
+
+    console.log(`Top ${topNumber} results:`);
+    console.log(`ClassID:\tProbability:`);
+    for (let i = 0; i < topNumber; i++) {
+        console.log(`${sortedClasses[i]}\t\t${inferResultForImage[sortedClasses[i]]}`)
+    }
+
+}
 
 for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     const inputLayerName = Object.keys(inputInfo)[0];
@@ -61,11 +79,17 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     const dims = inputBlob.getDims();
     const image = sourceImage.resize(dims[2], dims[3]);
     const data = toCHWArray(image);
-    inputBlob.fillImageAsU8(data);
+    inputBlob.fillWithU8(data);
 }
 
 inferRequest.infer();
 
 constoutputBlob = inferRequest.getBlob(outputLayerName);
-constoutputBlob.getTopClassificationResults(100);
-console.log('done');
+
+const inferResults = constoutputBlob.getClassificationResult();
+
+for (let batch = 0; batch < inferResults.length; ++batch) {
+
+    const inferResultForImage = inferResults[batch];
+    printClassificationResult(inferResultForImage);
+}

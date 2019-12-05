@@ -4,9 +4,9 @@
 
 Napi::Object InferenceEngineJS::Blob::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "Blob", {
+            InstanceMethod("fillWithU8", &Blob::fillWithU8),
             InstanceMethod("getDims", &Blob::getDims),
-            InstanceMethod("fillImageAsU8", &Blob::fillImageAsU8),
-            InstanceMethod("getTopClassificationResults", &Blob::getTopClassificationResults),
+            InstanceMethod("getClassificationResult", &Blob::getClassificationResult),
     });
 
     constructor = Napi::Persistent(func);
@@ -31,7 +31,7 @@ Napi::Value InferenceEngineJS::Blob::getDims(const Napi::CallbackInfo &info) {
     return vectorToNapiArray<std::size_t, Napi::Number>(env, dims);
 }
 
-void InferenceEngineJS::Blob::fillImageAsU8(const Napi::CallbackInfo &info) {
+void InferenceEngineJS::Blob::fillWithU8(const Napi::CallbackInfo &info) {
     auto inputData = info[0].As<Napi::Array>();
     using myBlobType = InferenceEngine::PrecisionTrait<InferenceEngine::Precision::U8>::value_type *;
     auto blobData = this->_ieBlobPtr->buffer().as<myBlobType>();
@@ -40,20 +40,36 @@ void InferenceEngineJS::Blob::fillImageAsU8(const Napi::CallbackInfo &info) {
     }
 }
 
-Napi::Value InferenceEngineJS::Blob::getTopClassificationResults(const Napi::CallbackInfo &info) {
-    auto numResults = static_cast<int>(info[0].As<Napi::Number>());
-    using myBlobType = InferenceEngine::PrecisionTrait<InferenceEngine::Precision::FP32>::value_type;
-    std::vector<unsigned> results;
-    InferenceEngine::TBlob<myBlobType>& tblob = dynamic_cast<InferenceEngine::TBlob<myBlobType>&>(*(this->_ieBlobPtr));
-    InferenceEngine::TopResults(numResults, tblob, results);
-    auto image_id=0;
-    for (size_t id = image_id * numResults, cnt = 0; id < (image_id + 1) * numResults; ++cnt, ++id) {
-        std::cout.precision(7);
-        /** Getting probability for resulting class **/
-        const auto result = this->_ieBlobPtr->buffer().as<myBlobType*>()[results[id] + image_id * (this->_ieBlobPtr->size() / 1)];
+Napi::Value InferenceEngineJS::Blob::getClassificationResult(const Napi::CallbackInfo &info) {
+    auto env = info.Env();
+    auto dims = this->_ieBlobPtr->getTensorDesc().getDims();
 
-        std::cout << std::setw(static_cast<int>(5)) << std::left << results[id] << " ";
-        std::cout << std::left << std::setw(static_cast<int>(5)) << std::fixed << result;
-        std::cout << std::endl;
+    Napi::Array output = Napi::Array::New(env, dims[0]);
+
+    size_t rank = dims.size();
+    if (!rank || !dims[0]) {
+        Napi::Error::New(env, "Cannot parse argument").ThrowAsJavaScriptException();
+        return env.Undefined();
     }
+
+    size_t batchSize = dims[0];
+    std::vector<unsigned> indexes(this->_ieBlobPtr->size() / batchSize);
+    using blobType = InferenceEngine::PrecisionTrait<InferenceEngine::Precision::FP32>::value_type;
+    auto blob = dynamic_cast<InferenceEngine::TBlob<blobType> &>(*(this->_ieBlobPtr));
+
+    for (size_t i = 0; i < batchSize; i++) {
+
+        auto bachArray = Napi::Array::New(env, dims[1]);
+
+        size_t offset = i * (this->_ieBlobPtr->size() / batchSize);
+        blobType *batchData = blob.data();
+        batchData += offset;
+
+        for (auto j = 0; j < dims[1]; j++) {
+            bachArray[j] = Napi::Number::New(env, batchData[j]);
+        }
+
+        output[i] = bachArray;
+    }
+    return output;
 }

@@ -16,9 +16,9 @@ namespace InferenceEngineJS {
 
         Napi::Value getDims(const Napi::CallbackInfo &info);
 
-        void fillImageAsU8(const Napi::CallbackInfo &info);
+        void fillWithU8(const Napi::CallbackInfo &info);
 
-        Napi::Value getTopClassificationResults(const Napi::CallbackInfo &info);
+        Napi::Value getClassificationResult(const Napi::CallbackInfo &info);
 
         private:
 
