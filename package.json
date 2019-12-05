@@ -10,11 +10,12 @@
   "scripts": {
     "build": "node-gyp rebuild",
     "sample:hello-query-device": "node samples/hello_query_device.js",
-    "sample:network-information": "node samples/network_information.js",
-    "sample:classification-async": "node samples/classification-async.js",
+    "sample:network-information": "node samples/network_information.ts",
     "tsc": "tsc",
     "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
-    "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js"
+    "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js",
+    "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
+    "prod:sample:network-information": "tsc && node ./js-build/network_information.js"
   },
   "author": "",
   "license": "ISC",
