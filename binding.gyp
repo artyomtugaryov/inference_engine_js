@@ -12,7 +12,7 @@
       "libraries": [
         "$INTEL_OPENVINO_DIR/deployment_tools/inference_engine/lib/intel64/libinference_engine.so"
       ],
-      "target_name": "InferenceEngineAddon",
+      "target_name": "InferenceEngineJS",
       "sources": [
         "src/blob.cpp",
         "src/cnn_layer.cpp",
