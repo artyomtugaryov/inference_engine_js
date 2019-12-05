@@ -11,7 +11,8 @@
     "build": "node-gyp rebuild",
     "sample:hello-query-device": "node samples/hello_query_device.js",
     "sample:network-information": "node samples/network_information.js",
-    "sample:classification-async": "node samples/classification-async.js"
+    "sample:classification-async": "node samples/classification-async.js",
+    "tsc": "tsc"
   },
   "author": "",
   "license": "ISC",
@@ -21,5 +22,8 @@
     "lodash": "^4.17.15",
     "node-addon-api": "^1.7.1",
     "node-gyp": "^6.0.0"
+  },
+  "devDependencies": {
+    "typescript": "^3.7.3"
   }
 }
