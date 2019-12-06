@@ -14,4 +14,4 @@ console.log(`This network contains ${network.size()} layers.`);
 
 console.log(`The network precision is  ${network.getPrecision()} `);
 
-console.log(`Input layer data has ${network.getInputsInfo()[0].data.getDims()} dimension.`);
+console.log(`Input layer data has ${network.getInputsInfo()[0].value.getDims()} dimension.`);

@@ -4,8 +4,6 @@
 Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "InferRequest", {
             InstanceMethod("getBlob", &InferRequest::getBlob),
-            InstanceMethod("startAsync", &InferRequest::startAsync),
-            InstanceMethod("setCompletionCallback", &InferRequest::setCompletionCallback),
             InstanceMethod("infer", &InferRequest::infer),
     });
 
@@ -18,7 +16,8 @@ Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object e
 InferenceEngineJS::InferRequest::InferRequest(const Napi::CallbackInfo &info) : Napi::ObjectWrap<InferRequest>(info) {
     if (info[0].IsUndefined()) {
         Napi::Error::New(info.Env(),
-                         "Set pointer to InferRequest to InferenceEngineJS::InferRequest constructor for initialize").ThrowAsJavaScriptException();
+                         "Set pointer to InferRequest to InferenceEngineJS::InferRequest constructor for initialize")
+                         .ThrowAsJavaScriptException();
         return;
     }
     auto executableNetworkPtr = info[0].As<Napi::External<InferenceEngine::ExecutableNetwork>>().Data();
@@ -35,20 +34,10 @@ Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &i
     }
     auto blobName = std::string(info[0].As<Napi::String>());
     auto blobPtr = this->_inferRequestPtr->GetBlob(blobName);
-    auto blobObj = InferenceEngineJS::Blob::constructor.New(
-            {Napi::External<InferenceEngine::Blob>::New(env, blobPtr.get())});
-    return blobObj;
-}
-
-void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::CallbackInfo &info) {
-    this->_inferRequestPtr->SetCompletionCallback([&] {
-        std::cout << "call Callback" << std::endl;
+    auto blobObj = InferenceEngineJS::Blob::constructor.New({
+        Napi::External<InferenceEngine::Blob>::New(env, blobPtr.get())
     });
-
-}
-
-void InferenceEngineJS::InferRequest::startAsync(const Napi::CallbackInfo &info) {
-    this->_inferRequestPtr->StartAsync();
+    return blobObj;
 }
 
 void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info){

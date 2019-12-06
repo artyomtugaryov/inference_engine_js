@@ -90,11 +90,12 @@ Napi::Value InferenceEngineJS::CNNNetwork::getOutputsInfo(const Napi::CallbackIn
     auto outputsDataMap = this->_ieNetwork.getOutputsInfo();
     Napi::Array result = Napi::Array::New(env, outputsDataMap.size());
     std::size_t i = 0;
-    for (const auto& inputInfo: outputsDataMap) {
-        auto dataPtr = inputInfo.second;
+    for (const auto& outputInfo: outputsDataMap) {
+        auto dataPtr = outputInfo.second;
         auto ieDataPtr = Data::constructor.New({Napi::External<InferenceEngine::Data>::New(env, dataPtr.get())});
         auto obj = Napi::Object::New(env);
-        obj.Set(inputInfo.first, ieDataPtr);
+        obj.Set("name", outputInfo.first);
+        obj.Set("value", ieDataPtr);
         result[i++] = obj;
     }
 

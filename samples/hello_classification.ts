@@ -7,8 +7,15 @@ const { Core, CNNNetwork } = require('bindings')('InferenceEngineJS');
 if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
+
 // @ts-ignore
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
+
+if (!process.env.IMAGE_PATH) {
+    throw Error('"IMAGE_PATH" environment variable is not set');
+}
+
+const sourceImage = imread(process.env.IMAGE_PATH);
 
 // @ts-ignore
 const ieCore = new Core();
@@ -20,22 +27,16 @@ const network = new CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 let inputInfo = network.getInputsInfo();
 
-if (size(Object.keys(inputInfo)) > 1) {
+if (size(inputInfo) > 1) {
     throw Error('Sample supports topologies with 1 input only');
 }
 
 inputInfo = inputInfo[0];
 
-
-const inputLayerName = inputInfo.name;
 const inputLayer = inputInfo.value;
-
-console.log(`Found input layer ${inputLayerName}`);
 
 inputLayer.setPrecision('U8');
 inputLayer.setLayout('NCHW');
-
-const sourceImage = imread(process.env.IMAGE_PATH);
 
 network.setBatchSize(1);
 
@@ -44,7 +45,7 @@ const executableNetwork = ieCore.loadNetwork(network, 'CPU');
 const inferRequest = executableNetwork.createInferRequest();
 
 const outputInfo = network.getOutputsInfo();
-const outputLayerName = Object.keys(outputInfo[0])[0];
+const outputLayerName = outputInfo[0].name;
 
 // @ts-ignore
 function toCHWArray(image) {
