@@ -14,6 +14,8 @@ namespace InferenceEngineJS {
 
         explicit Blob(const Napi::CallbackInfo &info);
 
+        ~Blob();
+
         Napi::Value getDims(const Napi::CallbackInfo &info);
 
         void fillWithU8(const Napi::CallbackInfo &info);

@@ -23,6 +23,10 @@ InferenceEngineJS::Blob::Blob(const Napi::CallbackInfo &info) : Napi::ObjectWrap
     this->_ieBlobPtr = std::shared_ptr<InferenceEngine::Blob>(blobPtr);
 }
 
+InferenceEngineJS::Blob::~Blob(){
+    std::cout<<"DESTRUCTOR"<<std::endl;
+}
+
 Napi::FunctionReference InferenceEngineJS::Blob::constructor;
 
 Napi::Value InferenceEngineJS::Blob::getDims(const Napi::CallbackInfo &info) {

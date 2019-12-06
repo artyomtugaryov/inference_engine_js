@@ -1,14 +1,12 @@
-const { imread } = require('opencv4nodejs');
-const { size } = require('lodash');
+import { imread, Mat, Vec3 } from 'opencv4nodejs';
+import { size } from 'lodash';
 
-// @ts-ignore
 const { Core, CNNNetwork } = require('bindings')('InferenceEngineJS');
 
 if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
 
-// @ts-ignore
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
 if (!process.env.IMAGE_PATH) {
@@ -17,12 +15,10 @@ if (!process.env.IMAGE_PATH) {
 
 const sourceImage = imread(process.env.IMAGE_PATH);
 
-// @ts-ignore
 const ieCore = new Core();
 
 //TODO: Load Extensions
 
-// @ts-ignore
 const network = new CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 let inputInfo = network.getInputsInfo();
@@ -44,15 +40,14 @@ const executableNetwork = ieCore.loadNetwork(network, 'CPU');
 
 const inferRequest = executableNetwork.createInferRequest();
 
-// @ts-ignore
-function toCHWArray(image) {
+function toCHWArray(image: Mat): number[] {
     const result = [];
     const height = image.rows;
     const width = image.cols;
     const channels = image.channels;
     for (let w = 0; w < width; w++) {
         for (let h = 0; h < height; h++) {
-            const pixel = image.at(h, w);
+            const pixel: Vec3 = <Vec3><unknown>image.at(h, w);
             const rgb = [pixel.x, pixel.y, pixel.z];
             for (let c = 0; c < channels; c++) {
                 result[c * height * width + h * height + w] = rgb[c];
@@ -62,7 +57,7 @@ function toCHWArray(image) {
     return result;
 }
 
-function printClassificationResult(inferResultForImage,  topNumber = 10) {
+function printClassificationResult(inferResultForImage: [],  topNumber: number = 10) {
     const indices = [];
 
     for (let i = 0; i < inferResultForImage.length; ++i) {
@@ -96,7 +91,7 @@ inferRequest.infer();
 const outputInfo = network.getOutputsInfo();
 const outputLayerName = outputInfo[0].name;
 
-outputBlob = inferRequest.getBlob(outputLayerName);
+const outputBlob = inferRequest.getBlob(outputLayerName);
 
 const inferResults = outputBlob.getClassificationResult();
 
@@ -104,3 +99,6 @@ for (let batch = 0; batch < inferResults.length; ++batch) {
     const inferResultForImage = inferResults[batch];
     printClassificationResult(inferResultForImage);
 }
+
+// console.log(outputBlob);
+console.log('Done');

@@ -3,9 +3,8 @@ const ie = require('bindings')('InferenceEngineJS');
 if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
-// @ts-ignore
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
-// @ts-ignore
+
 const network = new ie.CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 console.log(`Batch size of the ${network.getName()} network is ${network.getBatchSize()}.`);
