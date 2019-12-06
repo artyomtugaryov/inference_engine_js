@@ -27,8 +27,8 @@ if (size(Object.keys(inputInfo)) > 1) {
 inputInfo = inputInfo[0];
 
 
-const inputLayerName = Object.keys(inputInfo)[0];
-const inputLayer = inputInfo[inputLayerName];
+const inputLayerName = inputInfo.name;
+const inputLayer = inputInfo.value;
 
 console.log(`Found input layer ${inputLayerName}`);
 
@@ -85,7 +85,7 @@ function printClassificationResult(inferResultForImage: [], topNumber: number = 
 }
 
 for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
-    const inputLayerName = Object.keys(inputInfo)[0];
+    const inputLayerName = inputInfo.name;
     const inputBlob = inferRequest.getBlob(inputLayerName);
     const dims = inputBlob.getDims();
     const image = sourceImage.resize(dims[2], dims[3]);

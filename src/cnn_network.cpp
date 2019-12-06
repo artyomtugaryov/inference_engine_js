@@ -77,7 +77,8 @@ Napi::Value InferenceEngineJS::CNNNetwork::getInputsInfo(const Napi::CallbackInf
         auto inputInfoPtr = inputInfo.second;
         auto ieInputInfo = InputInfo::constructor.New({Napi::External<InferenceEngine::InputInfo>::New(env, inputInfoPtr.get())});
         auto obj = Napi::Object::New(env);
-        obj.Set(inputInfo.first, ieInputInfo);
+        obj.Set("name", inputInfo.first);
+        obj.Set("value", ieInputInfo);
         result[i++] = obj;
     }
 
