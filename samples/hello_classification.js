@@ -62,7 +62,7 @@ function toCHWArray(image) {
     return result;
 }
 
-function printClassificationResult(inferResultForImage: [], topNumber: number = 10) {
+function printClassificationResult(inferResultForImage,  topNumber = 10) {
     const indices = [];
 
     for (let i = 0; i < inferResultForImage.length; ++i) {
@@ -96,11 +96,11 @@ inferRequest.infer();
 const outputInfo = network.getOutputsInfo();
 const outputLayerName = outputInfo[0].name;
 
-const constOutputBlob = inferRequest.getBlob(outputLayerName);
+outputBlob = inferRequest.getBlob(outputLayerName);
 
-// const inferResults = constOutputBlob.getClassificationResult();
+const inferResults = outputBlob.getClassificationResult();
 
-// for (let batch = 0; batch < inferResults.length; ++batch) {
-    // const inferResultForImage = inferResults[batch];
-    // printClassificationResult(inferResultForImage);
-// }
+for (let batch = 0; batch < inferResults.length; ++batch) {
+    const inferResultForImage = inferResults[batch];
+    printClassificationResult(inferResultForImage);
+}

@@ -10,8 +10,7 @@
   "scripts": {
     "build": "node-gyp rebuild",
     "tsc": "tsc",
-    "dev:sample:hello-classification": "ts-node-dev --respawn --transpileOnly samples/hello_classification.ts",
-    "prod:sample:hello-classification": "tsc && node ./js-build/hello_classification.js",
+    "dev:sample:hello-classification": "node samples/hello_classification.js",
     "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
     "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js",
     "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
