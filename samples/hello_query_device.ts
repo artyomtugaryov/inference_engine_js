@@ -1,5 +1,7 @@
+// @ts-ignore
 const { Core } = require('bindings')('InferenceEngineJS');
 
+// @ts-ignore
 const ieCore = new Core();
 
 const availableDevices = ieCore.getAvailableDevices();

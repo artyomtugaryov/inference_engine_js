@@ -1,17 +1,21 @@
-const cv = require('opencv4nodejs');
-const {size} = require('lodash');
-const {Core, CNNNetwork} = require('bindings')('InferenceEngineJS');
+const { imread } = require('opencv4nodejs');
+const { size } = require('lodash');
+
+// @ts-ignore
+const { Core, CNNNetwork } = require('bindings')('InferenceEngineJS');
 
 if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
-
+// @ts-ignore
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
+// @ts-ignore
 const ieCore = new Core();
 
 //TODO: Load Extensions
 
+// @ts-ignore
 const network = new CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 let inputInfo = network.getInputsInfo();
@@ -31,7 +35,7 @@ console.log(`Found input layer ${inputLayerName}`);
 inputLayer.setPrecision('U8');
 inputLayer.setLayout('NCHW');
 
-const sourceImage = cv.imread(process.env.IMAGE_PATH);
+const sourceImage = imread(process.env.IMAGE_PATH);
 
 network.setBatchSize(1);
 
@@ -42,7 +46,8 @@ const inferRequest = executableNetwork.createInferRequest();
 const outputInfo = network.getOutputsInfo();
 const outputLayerName = Object.keys(outputInfo[0])[0];
 
-function toCHWArray(image: cv.Mat) {
+// @ts-ignore
+function toCHWArray(image) {
     const result = [];
     const height = image.rows;
     const width = image.cols;
@@ -59,7 +64,7 @@ function toCHWArray(image: cv.Mat) {
     return result;
 }
 
-function printClassificationResult(inferResultForImage: cv.Mat, topNumber: number = 10) {
+function printClassificationResult(inferResultForImage: [], topNumber: number = 10) {
     const indices = [];
 
     for (let i = 0; i < inferResultForImage.length; ++i) {
@@ -95,7 +100,6 @@ const constOutputBlob = inferRequest.getBlob(outputLayerName);
 const inferResults = constOutputBlob.getClassificationResult();
 
 for (let batch = 0; batch < inferResults.length; ++batch) {
-
     const inferResultForImage = inferResults[batch];
     printClassificationResult(inferResultForImage);
 }

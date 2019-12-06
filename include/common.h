@@ -15,7 +15,6 @@ namespace InferenceEngineJS {
         return result;
     }
 
-
     template<class T, class K>
     Napi::Array tupleToNapiArray(const Napi::Env &env, const std::tuple<T, T, T> &tpl);
 
