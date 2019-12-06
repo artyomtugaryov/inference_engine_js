@@ -44,9 +44,6 @@ const executableNetwork = ieCore.loadNetwork(network, 'CPU');
 
 const inferRequest = executableNetwork.createInferRequest();
 
-const outputInfo = network.getOutputsInfo();
-const outputLayerName = outputInfo[0].name;
-
 // @ts-ignore
 function toCHWArray(image) {
     const result = [];
@@ -96,11 +93,14 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
 
 inferRequest.infer();
 
+const outputInfo = network.getOutputsInfo();
+const outputLayerName = outputInfo[0].name;
+
 const constOutputBlob = inferRequest.getBlob(outputLayerName);
 
-const inferResults = constOutputBlob.getClassificationResult();
+// const inferResults = constOutputBlob.getClassificationResult();
 
-for (let batch = 0; batch < inferResults.length; ++batch) {
-    const inferResultForImage = inferResults[batch];
-    printClassificationResult(inferResultForImage);
-}
+// for (let batch = 0; batch < inferResults.length; ++batch) {
+    // const inferResultForImage = inferResults[batch];
+    // printClassificationResult(inferResultForImage);
+// }

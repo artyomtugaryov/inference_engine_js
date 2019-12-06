@@ -29,7 +29,8 @@ Napi::FunctionReference InferenceEngineJS::InferRequest::constructor;
 Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &info) {
     auto env = info.Env();
     if (info[0].IsUndefined()) {
-        Napi::Error::New(info.Env(), "Set name of blob to InferRequest::getBlob").ThrowAsJavaScriptException();
+        Napi::Error::New(info.Env(), "Set name of blob to InferenceEngineJS::InferRequest::getBlob")
+                         .ThrowAsJavaScriptException();
         return env.Undefined();
     }
     auto blobName = std::string(info[0].As<Napi::String>());
