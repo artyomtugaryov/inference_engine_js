@@ -6,9 +6,9 @@
 
 namespace InferenceEngineJS {
     template<class InputType, class OutputType>
-    const Napi::Array vectorToNapiArray(const Napi::Env &env, const std::vector<InputType> &vec){
+    Napi::Array vectorToNapiArray(const Napi::Env &env, const std::vector<InputType> &vec){
         Napi::Array result = Napi::Array::New(env);
-        int size = vec.size();
+        const auto size = vec.size();
         for (std::size_t i = 0; i < size; i++) {
             result[i] = OutputType::New(env, vec[i]);
         }
@@ -24,8 +24,6 @@ namespace InferenceEngineJS {
     Napi::Value parseParameter(const Napi::Env &env, const InferenceEngine::Parameter &param);
 
     std::map<std::string, std::string> objectToMap(const Napi::Object &object);
-
-    Napi::Value mapToObject(const Napi::Object &object);
 
     InferenceEngine::Layout layoutFromString(const std::string& layout);
 }

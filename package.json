@@ -10,6 +10,8 @@
   "scripts": {
     "build": "node-gyp rebuild",
     "tsc": "tsc",
+    "dev:sample:hello-classification": "ts-node-dev --respawn --transpileOnly samples/hello_classification.ts",
+    "prod:sample:hello-classification": "tsc && node ./js-build/hello_classification.js",
     "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
     "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js",
     "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
@@ -22,6 +24,7 @@
     "libxmljs": "^0.19.7",
     "lodash": "^4.17.15",
     "node-addon-api": "^1.7.1",
+    "opencv4nodejs": "^5.5.0",
     "node-gyp": "^6.0.0"
   },
   "devDependencies": {
