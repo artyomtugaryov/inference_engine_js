@@ -14,13 +14,14 @@ namespace InferenceEngineJS {
 
         explicit Blob(const Napi::CallbackInfo &info);
 
-        ~Blob();
-
         Napi::Value getDims(const Napi::CallbackInfo &info);
 
         void fillWithU8(const Napi::CallbackInfo &info);
 
         Napi::Value getClassificationResult(const Napi::CallbackInfo &info);
+
+        static Napi::Object NewInstance(Napi::Env env, Napi::Value inferRequest, Napi::String name);
+
     private:
 
         InferenceEngine::Blob::Ptr _ieBlobPtr;

@@ -19,12 +19,9 @@ InferenceEngineJS::Blob::Blob(const Napi::CallbackInfo &info) : Napi::ObjectWrap
     if (info[0].IsUndefined()) {
         Napi::Error::New(info.Env(), "Set pointer to Blob to InferenceEngineJS::Blob constructor for initialize");
     }
-    auto blobPtr = info[0].As<Napi::External<InferenceEngine::Blob>>().Data();
-    this->_ieBlobPtr = std::shared_ptr<InferenceEngine::Blob>(blobPtr);
-}
-
-InferenceEngineJS::Blob::~Blob(){
-    std::cout<<"DESTRUCTOR"<<std::endl;
+    auto inferRequestPtr = info[0].As<Napi::External<InferenceEngine::InferRequest>>().Data();
+    auto blobName = std::string(info[1].As<Napi::String>());
+    this->_ieBlobPtr = inferRequestPtr->GetBlob(blobName);
 }
 
 Napi::FunctionReference InferenceEngineJS::Blob::constructor;
@@ -42,6 +39,12 @@ void InferenceEngineJS::Blob::fillWithU8(const Napi::CallbackInfo &info) {
     for (unsigned int i = 0; i < inputData.Length(); i++) {
         blobData[i] = static_cast<unsigned int>((inputData.Get(i).As<Napi::Number>()));
     }
+}
+
+Napi::Object InferenceEngineJS::Blob::NewInstance(Napi::Env env, Napi::Value inferRequest, Napi::String name){
+    Napi::EscapableHandleScope scope(env);
+    Napi::Object obj = constructor.New({inferRequest, name});
+    return scope.Escape(napi_value(obj)).ToObject();
 }
 
 Napi::Value InferenceEngineJS::Blob::getClassificationResult(const Napi::CallbackInfo &info) {

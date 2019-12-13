@@ -33,10 +33,10 @@ Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &i
                          .ThrowAsJavaScriptException();
         return env.Undefined();
     }
-    auto blobName = std::string(info[0].As<Napi::String>());
-    auto blobPtr = this->_inferRequestPtr->GetBlob(blobName);
+    auto blobName = info[0].As<Napi::String>();
     auto blobObj = InferenceEngineJS::Blob::constructor.New({
-        Napi::External<InferenceEngine::Blob>::New(env, blobPtr.get())
+        Napi::External<InferenceEngine::InferRequest>::New(env,  this->_inferRequestPtr.get()),
+        blobName
     });
     return blobObj;
 }

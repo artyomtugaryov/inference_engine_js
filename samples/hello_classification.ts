@@ -100,5 +100,4 @@ for (let batch = 0; batch < inferResults.length; ++batch) {
     printClassificationResult(inferResultForImage);
 }
 
-// console.log(outputBlob);
 console.log('Done');
