@@ -19,12 +19,9 @@ InferenceEngineJS::Blob::Blob(const Napi::CallbackInfo &info) : Napi::ObjectWrap
     if (info[0].IsUndefined()) {
         Napi::Error::New(info.Env(), "Set pointer to Blob to InferenceEngineJS::Blob constructor for initialize");
     }
-    auto blobPtr = info[0].As<Napi::External<InferenceEngine::Blob>>().Data();
-    this->_ieBlobPtr = std::shared_ptr<InferenceEngine::Blob>(blobPtr);
-}
-
-InferenceEngineJS::Blob::~Blob(){
-    std::cout<<"DESTRUCTOR"<<std::endl;
+    auto inferRequestPtr = info[0].As<Napi::External<InferenceEngine::InferRequest>>().Data();
+    auto blobName = std::string(info[1].As<Napi::String>());
+    this->_ieBlobPtr = inferRequestPtr->GetBlob(blobName);
 }
 
 Napi::FunctionReference InferenceEngineJS::Blob::constructor;
