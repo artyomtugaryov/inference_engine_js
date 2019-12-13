@@ -20,8 +20,6 @@ namespace InferenceEngineJS {
 
         Napi::Value getClassificationResult(const Napi::CallbackInfo &info);
 
-        static Napi::Object NewInstance(Napi::Env env, Napi::Value inferRequest, Napi::String name);
-
     private:
 
         InferenceEngine::Blob::Ptr _ieBlobPtr;

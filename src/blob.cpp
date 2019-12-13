@@ -41,12 +41,6 @@ void InferenceEngineJS::Blob::fillWithU8(const Napi::CallbackInfo &info) {
     }
 }
 
-Napi::Object InferenceEngineJS::Blob::NewInstance(Napi::Env env, Napi::Value inferRequest, Napi::String name){
-    Napi::EscapableHandleScope scope(env);
-    Napi::Object obj = constructor.New({inferRequest, name});
-    return scope.Escape(napi_value(obj)).ToObject();
-}
-
 Napi::Value InferenceEngineJS::Blob::getClassificationResult(const Napi::CallbackInfo &info) {
     auto env = info.Env();
     auto dims = this->_ieBlobPtr->getTensorDesc().getDims();
