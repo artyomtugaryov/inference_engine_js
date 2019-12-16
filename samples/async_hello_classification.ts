@@ -57,7 +57,7 @@ function toCHWArray(image: Mat): number[] {
     return result;
 }
 
-function printClassificationResult(inferResultForImage: [],  topNumber: number = 10) {
+function printClassificationResult(inferResultForImage: [], topNumber: number = 10) {
     const indices = [];
 
     for (let i = 0; i < inferResultForImage.length; ++i) {
@@ -86,10 +86,20 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     inputBlob.fillWithU8(data);
 }
 
-inferRequest.setCompletionCallback(()=>{
-    console.log('Done ir');
+inferRequest.setCompletionCallback(() => {
+
+    const outputInfo = network.getOutputsInfo();
+    const outputLayerName = outputInfo[0].name;
+
+    const outputBlob = inferRequest.getBlob(outputLayerName);
+
+    const inferResults = outputBlob.getClassificationResult();
+
+    for (let batch = 0; batch < inferResults.length; ++batch) {
+        const inferResultForImage = inferResults[batch];
+        printClassificationResult(inferResultForImage);
+    }
 });
 
 inferRequest.startAsync();
 
-console.log('Done');

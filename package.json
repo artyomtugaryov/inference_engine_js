@@ -6,7 +6,7 @@
     "type": "git",
     "url": "git://github.com/artyomtugaryov/inference_engine_js.git"
   },
-  "main": "sample.js",
+  "main": "tsc && node ./js-build/hello_query_device.js",
   "scripts": {
     "build": "node-gyp rebuild",
     "tsc": "tsc",

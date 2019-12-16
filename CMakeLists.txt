@@ -4,19 +4,19 @@ project(InferenceEngineJS)
 
 set(CMAKE_CXX_STANDARD 11)
 
-set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -frtti -fpermissive")
+set(CMAKE_CXX_FLAGS "-frtti -fpermissive")
 
 find_package(InferenceEngine 2.1 REQUIRED)
 
+set(NODE_NODULES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/node_modules")
+
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
                     "${InferenceEngine_INCLUDE_DIRS}"
-                    "${CMAKE_CURRENT_SOURCE_DIR}/node_modules/node-addon-api"
-                    "${CMAKE_CURRENT_SOURCE_DIR}/node_modules/node-addon-api/src"
-                    "${CMAKE_CURRENT_SOURCE_DIR}/node_modules/napi-thread-safe-callback")
+                    "${NODE_NODULES_PATH}/node-addon-api"
+                    "${NODE_NODULES_PATH}/node-addon-api/src"
+                    "${NODE_NODULES_PATH}/napi-thread-safe-callback")
 
-file(GLOB SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp
-        )
+file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
 

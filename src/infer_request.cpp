@@ -45,22 +45,22 @@ Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &i
     return blobObj;
 }
 
-void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info){
+void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info) {
     this->_inferRequestPtr->Infer();
 }
 
 void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::CallbackInfo& info) {
     auto callback = std::make_shared<ThreadSafeCallback>(info[0].As<Napi::Function>());
-    bool fail = info.Length() > 1;
-    this->_inferRequestPtr->SetCompletionCallback([&]{
-        if(fail){
-            Napi::Error::New(info.Env(), "Set name of blob to InferenceEngineJS::InferRequest::getBlob")
-                    .ThrowAsJavaScriptException();
-
-        }
-        callback->call();
-    });
+    this->_inferRequestPtr->SetCompletionCallback([callback] {
+                                                      try {
+                                                          callback->call();
+                                                      } catch (std::exception &e) {
+                                                          std::cout<<"Error"<<std::endl;
+                                                          callback->callError(e.what());
+                                                      }
+                                                  });
 }
+
 void InferenceEngineJS::InferRequest::startAsync(const Napi::CallbackInfo& info) {
     this->_inferRequestPtr->StartAsync();
 }
