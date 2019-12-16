@@ -12,6 +12,7 @@
     "tsc": "tsc",
     "dev:sample:hello-classification": "ts-node-dev --respawn --transpileOnly samples/hello_classification.ts",
     "prod:sample:hello-classification": "tsc && node ./js-build/hello_classification.js",
+    "prod:sample:async-hello-classification": "tsc && node ./js-build/async_hello_classification.js",
     "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
     "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js",
     "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
@@ -23,9 +24,10 @@
     "bindings": "^1.5.0",
     "libxmljs": "^0.19.7",
     "lodash": "^4.17.15",
+    "napi-thread-safe-callback": "0.0.6",
     "node-addon-api": "^1.7.1",
-    "opencv4nodejs": "^5.5.0",
-    "node-gyp": "^6.0.0"
+    "node-gyp": "^6.0.0",
+    "opencv4nodejs": "^5.5.0"
   },
   "devDependencies": {
     "@types/lodash": "^4.14.149",

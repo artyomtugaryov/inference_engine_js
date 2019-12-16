@@ -1,13 +1,12 @@
 {
   "targets": [
-    { 
-      "cflags!": [ "-fno-exceptions", "-fno-rtti" ],
-      "cflags!": [ "-std=c++11" ],
-      "cflags_cc!": [ "-fno-exceptions", "-fno-rtti" ],
+    {
+      "cflags_cc": [ "-fexceptions", "-frtti", "-fpermissive"],
       "include_dirs" : [
         "<!@(node -p \"require('node-addon-api').include\")",
-        "include",
-        "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/include"
+        "<!@(node -p \"require('napi-thread-safe-callback').include\")",
+        "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/include",
+        "include"
       ],
       "libraries": [
         "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/lib/intel64/libinference_engine.so"
@@ -24,7 +23,6 @@
         "src/init.cpp",
         "src/input_info.cpp"
        ],
-      'defines': [ 'NAPI_DISABLE_CPP_EXCEPTIONS' ]
     }
   ]
 }

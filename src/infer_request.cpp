@@ -1,3 +1,5 @@
+#include <napi-thread-safe-callback.hpp>
+
 #include "blob.h"
 #include "infer_request.h"
 
@@ -5,6 +7,8 @@ Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object e
     Napi::Function func = DefineClass(env, "InferRequest", {
             InstanceMethod("getBlob", &InferRequest::getBlob),
             InstanceMethod("infer", &InferRequest::infer),
+            InstanceMethod("setCompletionCallback", &InferRequest::setCompletionCallback),
+            InstanceMethod("startAsync", &InferRequest::startAsync),
     });
 
     constructor = Napi::Persistent(func);
@@ -43,4 +47,20 @@ Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &i
 
 void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info){
     this->_inferRequestPtr->Infer();
+}
+
+void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::CallbackInfo& info) {
+    auto callback = std::make_shared<ThreadSafeCallback>(info[0].As<Napi::Function>());
+    bool fail = info.Length() > 1;
+    this->_inferRequestPtr->SetCompletionCallback([&]{
+        if(fail){
+            Napi::Error::New(info.Env(), "Set name of blob to InferenceEngineJS::InferRequest::getBlob")
+                    .ThrowAsJavaScriptException();
+
+        }
+        callback->call();
+    });
+}
+void InferenceEngineJS::InferRequest::startAsync(const Napi::CallbackInfo& info) {
+    this->_inferRequestPtr->StartAsync();
 }
