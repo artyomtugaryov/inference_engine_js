@@ -20,6 +20,7 @@
         "src/common.cpp",
         "src/core.cpp",
         "src/executable_network.cpp",
+        "src/data.cpp",
         "src/infer_request.cpp",
         "src/init.cpp",
         "src/input_info.cpp"
