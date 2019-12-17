@@ -13,8 +13,7 @@ set(NODE_NODULES_PATH "${CMAKE_CURRENT_SOURCE_DIR}/node_modules")
 include_directories("${CMAKE_CURRENT_SOURCE_DIR}/include"
                     "${InferenceEngine_INCLUDE_DIRS}"
                     "${NODE_NODULES_PATH}/node-addon-api"
-                    "${NODE_NODULES_PATH}/node-addon-api/src"
-                    "${NODE_NODULES_PATH}/napi-thread-safe-callback")
+                    "${NODE_NODULES_PATH}/node-addon-api/src")
 
 file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp)
 
