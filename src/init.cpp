@@ -14,10 +14,10 @@ Napi::Object Init (Napi::Env env, Napi::Object exports) {
     InferenceEngineJS::CNNLayer::Init(env, exports);
     InferenceEngineJS::CNNNetwork::Init(env, exports);
     InferenceEngineJS::Core::Init(env, exports);
+    InferenceEngineJS::Data::Init(env, exports);
     InferenceEngineJS::ExecutableNetwork::Init(env, exports);
     InferenceEngineJS::InferRequest::Init(env, exports);
     InferenceEngineJS::InputInfo::Init(env, exports);
-    InferenceEngineJS::Data::Init(env, exports);
     return exports;
 }
 
