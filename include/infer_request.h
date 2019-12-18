@@ -26,8 +26,6 @@ namespace InferenceEngineJS {
 
         InferenceEngine::InferRequest::Ptr _inferRequestPtr;
 
-        Napi::ThreadSafeFunction _threadSafeFunction;
-
     };
 }
 

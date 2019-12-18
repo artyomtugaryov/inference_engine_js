@@ -4,6 +4,7 @@
       "cflags_cc": [ "-fexceptions", "-frtti", "-fpermissive"],
       "include_dirs" : [
         "<!@(node -p \"require('node-addon-api').include\")",
+        "<!@(node -p \"require('napi-thread-safe-callback').include\")",
         "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/include",
         "include"
       ],
