@@ -1,7 +1,5 @@
 #include "blob.h"
 #include "infer_request.h"
-#include "napi-thread-safe-callback.hpp"
-
 
 Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object exports) {
     Napi::Function func = DefineClass(env, "InferRequest", {
@@ -50,10 +48,22 @@ void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info) {
 }
 
 void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::CallbackInfo& info) {
-    auto callback = std::make_shared<ThreadSafeCallback>(info[0].As<Napi::Function>());
-
-    this->_inferRequestPtr->SetCompletionCallback([callback] () {
-        callback->call();
+    auto env = info.Env();
+    this->_threadSafeFunction = Napi::ThreadSafeFunction::New(
+      env,
+      info[0].As<Napi::Function>(),  // JavaScript function called asynchronously
+      "Resource Name",         // Name
+      0,                       // Unlimited queue
+      1,                       // Only one thread will use this initially
+      []( Napi::Env ) {        // Finalizer used to clean threads up
+        //nativeThread.join();
+      } );
+    this->_inferRequestPtr->SetCompletionCallback([this] () {
+        auto callback = []( Napi::Env env, Napi::Function jsCallback) {
+            jsCallback.Call( {} );
+       };
+    this->_threadSafeFunction.BlockingCall( callback );
+    this->_threadSafeFunction.Release();    
     });
 }
 

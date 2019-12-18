@@ -103,4 +103,4 @@ inferRequest.setCompletionCallback(()=>{
 
 inferRequest.startAsync();
 
-setTimeout(()=>console.log("Done"), 3000);
+console.log("Done")
