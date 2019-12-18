@@ -86,20 +86,8 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     inputBlob.fillWithU8(data);
 }
 
-inferRequest.setCompletionCallback(() => {
-
-    const outputInfo = network.getOutputsInfo();
-    const outputLayerName = outputInfo[0].name;
-
-    const outputBlob = inferRequest.getBlob(outputLayerName);
-
-    const inferResults = outputBlob.getClassificationResult();
-
-    for (let batch = 0; batch < inferResults.length; ++batch) {
-        const inferResultForImage = inferResults[batch];
-        printClassificationResult(inferResultForImage);
-    }
-});
+inferRequest.setCompletionCallback(()=>{});
 
 inferRequest.startAsync();
 
+setTimeout(()=>console.log("Done"), 3000);

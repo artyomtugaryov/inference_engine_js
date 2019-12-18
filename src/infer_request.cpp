@@ -1,5 +1,3 @@
-#include <napi-thread-safe-callback.hpp>
-
 #include "blob.h"
 #include "infer_request.h"
 
@@ -50,17 +48,15 @@ void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info) {
 }
 
 void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::CallbackInfo& info) {
-    auto callback = std::make_shared<ThreadSafeCallback>(info[0].As<Napi::Function>());
-    this->_inferRequestPtr->SetCompletionCallback([callback] {
-                                                      try {
-                                                          callback->call();
-                                                      } catch (std::exception &e) {
-                                                          std::cout<<"Error"<<std::endl;
-                                                          callback->callError(e.what());
-                                                      }
-                                                  });
+    std::cout <<"s callback"<<std::endl;
+    this->_inferRequestPtr->SetCompletionCallback([] {
+        std::cout <<"callback"<<std::endl;
+    });
+    std::cout <<"e callback"<<std::endl;
 }
 
 void InferenceEngineJS::InferRequest::startAsync(const Napi::CallbackInfo& info) {
+    std::cout <<"StartAsync"<<std::endl;
     this->_inferRequestPtr->StartAsync();
+    std::cout <<"StartAsync"<<std::endl;
 }

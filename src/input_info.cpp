@@ -17,11 +17,22 @@ Napi::Object InferenceEngineJS::InputInfo::Init(Napi::Env env, Napi::Object expo
 
 InferenceEngineJS::InputInfo::InputInfo(const Napi::CallbackInfo &info) : Napi::ObjectWrap<InputInfo>(info) {
     if (info[0].IsUndefined()) {
-        Napi::Error::New(info.Env(),"Set pointer to InputInfo to InferenceEngineJS::InputInfo constructor for initialize").ThrowAsJavaScriptException();
+        Napi::Error::New(info.Env(),"Set pointer to CNNNetwork to InferenceEngineJS::InputInfo constructor for initialize").ThrowAsJavaScriptException();
         return;
     }
-    auto layerPtr = info[0].As<Napi::External<InferenceEngine::InputInfo>>().Data();
-    this->_ieInputInfo = std::shared_ptr<InferenceEngine::InputInfo>(layerPtr);
+    if (info[1].IsUndefined()) {
+        Napi::Error::New(info.Env(),"Set name of Input to InferenceEngineJS::InputInfo constructor for initialize").ThrowAsJavaScriptException();
+        return;
+    }
+    auto cnnNetwork = info[0].As<Napi::External<InferenceEngine::CNNNetwork>>().Data();
+    auto inputInfoName = std::string(info[1].As<Napi::String>());
+
+    for(const auto &inputInfo: cnnNetwork->getInputsInfo()){
+        if (inputInfo.first == inputInfoName){
+            this->_ieInputInfo = inputInfo.second;
+            return;
+        }
+    }
 }
 
 Napi::FunctionReference InferenceEngineJS::InputInfo::constructor;
