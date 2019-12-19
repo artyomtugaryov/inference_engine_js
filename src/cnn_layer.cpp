@@ -14,10 +14,17 @@ Napi::Object InferenceEngineJS::CNNLayer::Init(Napi::Env env, Napi::Object expor
 
 InferenceEngineJS::CNNLayer::CNNLayer(const Napi::CallbackInfo &info) : Napi::ObjectWrap<CNNLayer>(info) {
     if (info[0].IsUndefined()) {
-        Napi::Error::New(info.Env(),"Set pointer to CNNLayer to InferenceEngineJS::CNNLayer constructor for initialize");
+        Napi::Error::New(info.Env(),"Set pointer to CNNNetwork to InferenceEngineJS::CNNLayer constructor for initialize").ThrowAsJavaScriptException();
+        return;
     }
-    auto layerPtr = info[0].As<Napi::External<InferenceEngine::CNNLayer>>().Data();
-    this->_ieCNNLayer = std::shared_ptr<InferenceEngine::CNNLayer>(layerPtr);
+    if (info[1].IsUndefined()) {
+        Napi::Error::New(info.Env(),"Set name of layer to InferenceEngineJS::CNNLayer constructor for initialize").ThrowAsJavaScriptException();
+        return;
+    }
+    auto cnnNetwork = info[0].As<Napi::External<InferenceEngine::CNNNetwork>>().Data();
+    auto layerName = std::string(info[1].As<Napi::String>());
+
+    this->_ieCNNLayer = cnnNetwork->getLayerByName(layerName.c_str());
 }
 
 Napi::FunctionReference InferenceEngineJS::CNNLayer::constructor;

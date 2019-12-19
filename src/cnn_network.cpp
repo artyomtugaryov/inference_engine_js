@@ -62,23 +62,30 @@ Napi::Value InferenceEngineJS::CNNNetwork::layerCount(const Napi::CallbackInfo &
 }
 
 Napi::Value InferenceEngineJS::CNNNetwork::getLayerByName(const Napi::CallbackInfo &info) {
-    auto layerName = std::string(info[0].ToString());
-    auto layerPtr = this->_ieNetwork.getLayerByName(layerName.c_str());
-    auto ieLayer = InferenceEngineJS::CNNLayer::constructor.New({Napi::External<InferenceEngine::CNNLayer>::New(info.Env(), layerPtr.get())});
+    auto env = info.Env();
+    auto layerName = info[0].ToString();
+    auto extIENetwork = Napi::External<InferenceEngine::CNNNetwork>::New(env, &(this->_ieNetwork));
+    auto ieLayer = InferenceEngineJS::CNNLayer::constructor.New({extIENetwork, layerName});
     return ieLayer;
 }
 
 Napi::Value InferenceEngineJS::CNNNetwork::getInputsInfo(const Napi::CallbackInfo &info) {
     auto env = info.Env();
     auto inputsDataMap = this->_ieNetwork.getInputsInfo();
+
     Napi::Array result = Napi::Array::New(env, inputsDataMap.size());
     std::size_t i = 0;
-    for (const auto& inputInfo: inputsDataMap) {
-        auto inputInfoPtr = inputInfo.second;
-        auto ieInputInfo = InputInfo::constructor.New({Napi::External<InferenceEngine::InputInfo>::New(env, inputInfoPtr.get())});
+
+    auto extIENetwork = Napi::External<InferenceEngine::CNNNetwork>::New(env, &(this->_ieNetwork));
+
+    for (const auto &inputInfo: inputsDataMap) {
+
+        auto ieInputInfo = InputInfo::constructor.New({extIENetwork, Napi::String::New(env, inputInfo.first)});
+
         auto obj = Napi::Object::New(env);
         obj.Set("name", inputInfo.first);
         obj.Set("value", ieInputInfo);
+
         result[i++] = obj;
     }
 
@@ -90,18 +97,21 @@ Napi::Value InferenceEngineJS::CNNNetwork::getOutputsInfo(const Napi::CallbackIn
     auto outputsDataMap = this->_ieNetwork.getOutputsInfo();
     Napi::Array result = Napi::Array::New(env, outputsDataMap.size());
     std::size_t i = 0;
-    for (const auto& outputInfo: outputsDataMap) {
-        auto dataPtr = outputInfo.second;
-        auto ieDataPtr = Data::constructor.New({Napi::External<InferenceEngine::Data>::New(env, dataPtr.get())});
+    auto extIENetwork = Napi::External<InferenceEngine::CNNNetwork>::New(env, &(this->_ieNetwork));
+    for (const auto &outputInfo: outputsDataMap) {
+
+        auto ieDataPtr = Data::constructor.New({extIENetwork, Napi::String::New(env, outputInfo.first)});
+
         auto obj = Napi::Object::New(env);
         obj.Set("name", outputInfo.first);
         obj.Set("value", ieDataPtr);
+
         result[i++] = obj;
     }
 
     return result;
 }
 
-InferenceEngine::CNNNetwork* InferenceEngineJS::CNNNetwork::getCNNNetworkPtr(){
+InferenceEngine::CNNNetwork *InferenceEngineJS::CNNNetwork::getCNNNetworkPtr() {
     return &(this->_ieNetwork);
 }

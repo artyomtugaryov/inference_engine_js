@@ -5,6 +5,8 @@ Napi::Object InferenceEngineJS::InferRequest::Init(Napi::Env env, Napi::Object e
     Napi::Function func = DefineClass(env, "InferRequest", {
             InstanceMethod("getBlob", &InferRequest::getBlob),
             InstanceMethod("infer", &InferRequest::infer),
+            InstanceMethod("setCompletionCallback", &InferRequest::setCompletionCallback),
+            InstanceMethod("startAsync", &InferRequest::startAsync),
     });
 
     constructor = Napi::Persistent(func);
@@ -41,6 +43,24 @@ Napi::Value InferenceEngineJS::InferRequest::getBlob(const Napi::CallbackInfo &i
     return blobObj;
 }
 
-void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info){
+void InferenceEngineJS::InferRequest::infer(const Napi::CallbackInfo &info) {
     this->_inferRequestPtr->Infer();
+}
+
+void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::CallbackInfo& info) {
+    auto env = info.Env();
+    this->_threadSafeFunction = Napi::ThreadSafeFunction::New(
+      env,
+      info[0].As<Napi::Function>(), "CompletionCallback", 0, 1, []( Napi::Env ) {} );
+    this->_inferRequestPtr->SetCompletionCallback([this] () {
+        auto callback = []( Napi::Env env, Napi::Function jsCallback) {
+            jsCallback.Call( {} );
+       };
+    this->_threadSafeFunction.BlockingCall( callback );
+    this->_threadSafeFunction.Release();
+    });
+}
+
+void InferenceEngineJS::InferRequest::startAsync(const Napi::CallbackInfo& info) {
+    this->_inferRequestPtr->StartAsync();
 }
