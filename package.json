@@ -8,7 +8,7 @@
   },
   "main": "tsc && node ./js-build/hello_query_device.js",
   "scripts": {
-    "build": "node-gyp rebuild",
+    "build": "node-gyp rebuild -j 12 --verbose",
     "tsc": "tsc",
     "dev:sample:hello-classification": "ts-node-dev --respawn --transpileOnly samples/hello_classification.ts",
     "prod:sample:hello-classification": "tsc && node ./js-build/hello_classification.js",

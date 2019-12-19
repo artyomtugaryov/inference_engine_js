@@ -51,19 +51,13 @@ void InferenceEngineJS::InferRequest::setCompletionCallback(const Napi::Callback
     auto env = info.Env();
     this->_threadSafeFunction = Napi::ThreadSafeFunction::New(
       env,
-      info[0].As<Napi::Function>(),  // JavaScript function called asynchronously
-      "Resource Name",         // Name
-      0,                       // Unlimited queue
-      1,                       // Only one thread will use this initially
-      []( Napi::Env ) {        // Finalizer used to clean threads up
-        //nativeThread.join();
-      } );
+      info[0].As<Napi::Function>(), "CompletionCallback", 0, 1, []( Napi::Env ) {} );
     this->_inferRequestPtr->SetCompletionCallback([this] () {
         auto callback = []( Napi::Env env, Napi::Function jsCallback) {
             jsCallback.Call( {} );
        };
     this->_threadSafeFunction.BlockingCall( callback );
-    this->_threadSafeFunction.Release();    
+    this->_threadSafeFunction.Release();
     });
 }
 

@@ -87,6 +87,7 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
 }
 
 inferRequest.setCompletionCallback(()=>{
+
     const outputInfo = network.getOutputsInfo();
     const outputLayerName = outputInfo[0].name;
 
@@ -103,4 +104,4 @@ inferRequest.setCompletionCallback(()=>{
 
 inferRequest.startAsync();
 
-console.log("Done")
+console.log("End of the script");
