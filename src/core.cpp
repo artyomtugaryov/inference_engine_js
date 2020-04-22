@@ -9,6 +9,7 @@ Napi::Object InferenceEngineJS::Core::Init(Napi::Env env, Napi::Object exports) 
             InstanceMethod("getVersion", &Core::getVersion),
             InstanceMethod("setConfig", &Core::getVersion),
             InstanceMethod("addExtension", &Core::addExtension),
+            InstanceMethod("readNetwork", &Core::readNetwork),
             InstanceMethod("registerPlugin", &Core::registerPlugin),
             InstanceMethod("registerPlugins", &Core::registerPlugins),
             InstanceMethod("unregisterPlugin", &Core::unregisterPlugin),
@@ -65,12 +66,22 @@ void InferenceEngineJS::Core::addExtension(const Napi::CallbackInfo &info) {
     this->_ieCore->AddExtension(extension, deviceName);
 }
 
-void InferenceEngineJS::Core::setConfig(const Napi::CallbackInfo &info) {
-    auto configObject = info[0].As<Napi::Object>();
-    auto device = info[1].As<Napi::String>();
-    auto params = objectToMap(configObject);
-    this->_ieCore->SetConfig(params, device);
+Napi::Value InferenceEngineJS::Core::readNetwork(const Napi::CallbackInfo &info) {
+    auto env = info.Env();
+
+    auto model = info[0].ToString();
+    auto weights = info[1].ToString();
+
+    auto ieNetworkObject = InferenceEngineJS::CNNNetwork::constructor.New({
+                                                                                  model,
+                                                                                  weights,
+                                                                                  Napi::External<InferenceEngine::Core>::New(
+                                                                                          env,
+                                                                                          this->_ieCore.get())
+                                                                          });
+    return ieNetworkObject;
 }
+
 
 Napi::Value InferenceEngineJS::Core::getMetric(const Napi::CallbackInfo &info) {
 
@@ -116,21 +127,25 @@ void InferenceEngineJS::Core::registerPlugins(const Napi::CallbackInfo &info) {
     this->_ieCore->RegisterPlugins(xmlConfigFile);
 }
 
-Napi::Value InferenceEngineJS::Core::loadNetwork(const Napi::CallbackInfo &info){
+Napi::Value InferenceEngineJS::Core::loadNetwork(const Napi::CallbackInfo &info) {
     auto env = info.Env();
     if (info[0].IsUndefined()) {
-        Napi::Error::New(info.Env(), "Set CNNNetwork to InferenceEngineJS::Core loadNetwork for initialize").ThrowAsJavaScriptException();
+        Napi::Error::New(info.Env(),
+                         "Set CNNNetwork to InferenceEngineJS::Core loadNetwork for initialize").ThrowAsJavaScriptException();
         return env.Undefined();
     }
     if (info[1].IsUndefined()) {
-        Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::Core loadNetwork for load Network").ThrowAsJavaScriptException();
+        Napi::Error::New(info.Env(),
+                         "Set device to InferenceEngineJS::Core loadNetwork for load Network").ThrowAsJavaScriptException();
         return env.Undefined();
     }
     auto ieNetworkPtr = Napi::ObjectWrap<InferenceEngineJS::CNNNetwork>::Unwrap(info[0].As<Napi::Object>());
     auto execNetworkObject = ExecutableNetwork::constructor.New({
-        Napi::External<InferenceEngine::CNNNetwork>::New(env, ieNetworkPtr->getCNNNetworkPtr()),
-        Napi::External<InferenceEngine::Core>::New(env, this->_ieCore.get()),
-        info[1]
-    });
+                                                                        Napi::External<InferenceEngine::CNNNetwork>::New(
+                                                                                env, ieNetworkPtr->getCNNNetworkPtr()),
+                                                                        Napi::External<InferenceEngine::Core>::New(env,
+                                                                                                                   this->_ieCore.get()),
+                                                                        info[1]
+                                                                });
     return execNetworkObject;
 }

@@ -26,7 +26,7 @@ namespace InferenceEngineJS {
 
         void addExtension(const Napi::CallbackInfo &info);
 
-        void setConfig(const Napi::CallbackInfo &info);
+        Napi::Value readNetwork (const Napi::CallbackInfo &info);
 
         Napi::Value getMetric(const Napi::CallbackInfo &info);
 

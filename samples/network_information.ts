@@ -5,12 +5,12 @@ if (!process.env.MODELS_PATH) {
 }
 const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
 
-const network = new ie.CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
+const ieCore = ie.Core()
+
+const network = new ieCore.readNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 console.log(`Batch size of the ${network.getName()} network is ${network.getBatchSize()}.`);
 
 console.log(`This network contains ${network.size()} layers.`);
-
-console.log(`The network precision is  ${network.getPrecision()} `);
 
 console.log(`Input layer data has ${network.getInputsInfo()[0].value.getDims()} dimension.`);
