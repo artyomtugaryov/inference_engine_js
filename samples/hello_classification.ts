@@ -7,7 +7,7 @@ if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
 
-const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
+const patToModel = process.env.MODELS_PATH;
 
 if (!process.env.IMAGE_PATH) {
     throw Error('"IMAGE_PATH" environment variable is not set');
@@ -19,7 +19,7 @@ const ieCore = new Core();
 
 //TODO: Load Extensions
 
-const network = new CNNNetwork(`${patToModel}xml`, `${patToModel}bin`);
+const network = ieCore.readNetwork(`${patToModel}xml`, `${patToModel}bin`);
 
 let inputInfo = network.getInputsInfo();
 

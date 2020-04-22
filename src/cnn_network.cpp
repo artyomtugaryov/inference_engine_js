@@ -9,11 +9,9 @@ Napi::Object InferenceEngineJS::CNNNetwork::Init(Napi::Env env, Napi::Object exp
     Napi::Function func = DefineClass(env, "CNNNetwork", {
             InstanceMethod("setBatchSize", &CNNNetwork::setBatchSize),
             InstanceMethod("getBatchSize", &CNNNetwork::getBatchSize),
-            InstanceMethod("getPrecision", &CNNNetwork::getPrecision),
             InstanceMethod("getName", &CNNNetwork::getName),
             InstanceMethod("layerCount", &CNNNetwork::layerCount),
             InstanceMethod("size", &CNNNetwork::layerCount),
-            InstanceMethod("getLayerByName", &CNNNetwork::getLayerByName),
             InstanceMethod("getInputsInfo", &CNNNetwork::getInputsInfo),
             InstanceMethod("getOutputsInfo", &CNNNetwork::getOutputsInfo),
     });
@@ -29,11 +27,9 @@ InferenceEngineJS::CNNNetwork::CNNNetwork(const Napi::CallbackInfo &info) : Napi
     auto model = std::string(info[0].ToString());
     auto weights = std::string(info[1].ToString());
 
-    InferenceEngine::CNNNetReader net_reader;
-    net_reader.ReadNetwork(model);
-    net_reader.ReadWeights(weights);
+    auto corePtr = info[2].As<Napi::External<InferenceEngine::Core>>().Data();
 
-    this->_ieNetwork = net_reader.getNetwork();
+    this->_ieNetwork = corePtr->ReadNetwork(model, weights);
 }
 
 Napi::FunctionReference InferenceEngineJS::CNNNetwork::constructor;
@@ -48,25 +44,12 @@ Napi::Value InferenceEngineJS::CNNNetwork::getBatchSize(const Napi::CallbackInfo
     return Napi::Number::New(info.Env(), value);
 }
 
-Napi::Value InferenceEngineJS::CNNNetwork::getPrecision(const Napi::CallbackInfo &info) {
-    auto value = this->_ieNetwork.getPrecision().name();
-    return Napi::String::New(info.Env(), value);
-}
-
 Napi::Value InferenceEngineJS::CNNNetwork::getName(const Napi::CallbackInfo &info) {
     return Napi::String::New(info.Env(), this->_ieNetwork.getName());
 }
 
 Napi::Value InferenceEngineJS::CNNNetwork::layerCount(const Napi::CallbackInfo &info) {
     return Napi::Number::New(info.Env(), this->_ieNetwork.layerCount());
-}
-
-Napi::Value InferenceEngineJS::CNNNetwork::getLayerByName(const Napi::CallbackInfo &info) {
-    auto env = info.Env();
-    auto layerName = info[0].ToString();
-    auto extIENetwork = Napi::External<InferenceEngine::CNNNetwork>::New(env, &(this->_ieNetwork));
-    auto ieLayer = InferenceEngineJS::CNNLayer::constructor.New({extIENetwork, layerName});
-    return ieLayer;
 }
 
 Napi::Value InferenceEngineJS::CNNNetwork::getInputsInfo(const Napi::CallbackInfo &info) {

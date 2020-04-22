@@ -17,13 +17,9 @@ namespace InferenceEngineJS {
 
         Napi::Value getBatchSize(const Napi::CallbackInfo &info);
 
-        Napi::Value getPrecision(const Napi::CallbackInfo &info);
-
         Napi::Value getName(const Napi::CallbackInfo &info);
 
         Napi::Value layerCount(const Napi::CallbackInfo &info);
-
-        Napi::Value getLayerByName(const Napi::CallbackInfo &info);
 
         Napi::Value getInputsInfo(const Napi::CallbackInfo &info);
 
@@ -31,8 +27,8 @@ namespace InferenceEngineJS {
 
         InferenceEngine::CNNNetwork* getCNNNetworkPtr();
 
-    private:
         static Napi::FunctionReference constructor;
+    private:
 
         InferenceEngine::CNNNetwork _ieNetwork;
     };
