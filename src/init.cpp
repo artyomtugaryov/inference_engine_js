@@ -1,7 +1,6 @@
 #include <napi.h>
 
 #include "blob.h"
-#include "cnn_layer.h"
 #include "cnn_network.h"
 #include "core.h"
 #include "data.h"
@@ -11,7 +10,6 @@
 
 Napi::Object Init (Napi::Env env, Napi::Object exports) {
     InferenceEngineJS::Blob::Init(env, exports);
-    InferenceEngineJS::CNNLayer::Init(env, exports);
     InferenceEngineJS::CNNNetwork::Init(env, exports);
     InferenceEngineJS::Core::Init(env, exports);
     InferenceEngineJS::Data::Init(env, exports);

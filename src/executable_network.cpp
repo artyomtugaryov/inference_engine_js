@@ -1,4 +1,3 @@
-#include <cnn_layer.h>
 #include <inference_engine.hpp>
 #include <infer_request.h>
 

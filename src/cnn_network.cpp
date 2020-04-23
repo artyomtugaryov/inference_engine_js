@@ -1,5 +1,4 @@
 #include <inference_engine.hpp>
-#include <cnn_layer.h>
 
 #include "cnn_network.h"
 #include "input_info.h"
