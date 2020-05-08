@@ -18,7 +18,7 @@ namespace InferenceEngineJS {
 
         void fillWithU8(const Napi::CallbackInfo &info);
 
-        Napi::Value getClassificationResult(const Napi::CallbackInfo &info);
+        Napi::Value data(const Napi::CallbackInfo &info);
 
     private:
 

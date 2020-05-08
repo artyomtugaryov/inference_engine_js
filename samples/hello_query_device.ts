@@ -18,3 +18,5 @@ for (let device of availableDevices) {
         }
     }
 }
+
+export {};
