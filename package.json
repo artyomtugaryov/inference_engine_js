@@ -12,11 +12,14 @@
     "tsc": "tsc",
     "dev:sample:hello-classification": "ts-node-dev --respawn --transpileOnly samples/hello_classification.ts",
     "prod:sample:hello-classification": "tsc && node ./js-build/hello_classification.js",
+    "dev:sample:async-hello-classification": "ts-node-dev --respawn --transpileOnly samples/async_hello_classification.ts",
     "prod:sample:async-hello-classification": "tsc && node ./js-build/async_hello_classification.js",
     "dev:sample:hello-query-device": "ts-node-dev --respawn --transpileOnly samples/hello_query_device.ts",
     "prod:sample:hello-query-device": "tsc && node ./js-build/hello_query_device.js",
     "dev:sample:network-information": "ts-node-dev --respawn --transpileOnly samples/network_information.ts",
-    "prod:sample:network-information": "tsc && node ./js-build/network_information.js"
+    "prod:sample:network-information": "tsc && node ./js-build/network_information.js",
+    "dev:sample:object-detection-ssd": "ts-node-dev --respawn --transpileOnly samples/object_detection_ssd.ts",
+    "prod:sample:object-detection-ssd": "tsc && node ./js-build/object_detection_ssd.js"
   },
   "author": "Artyom Tugaryov, Yaroslav Tarkan",
   "license": "ISC",

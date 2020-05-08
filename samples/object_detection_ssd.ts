@@ -1,7 +1,8 @@
-import { imread } from 'opencv4nodejs';
-import { size } from 'lodash';
-import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
-const { Core } = require('../lib/inference_engine');
+import {imread} from 'opencv4nodejs';
+import {size} from 'lodash';
+import {drawBoxInImage, ObjectDetectionPrediction, parseSSDResults, toCHWArray} from "./common";
+
+const {Core} = require('bindings')('InferenceEngineJS');
 
 if (!process.env.MODEL_PATH) {
     throw Error('"MODEL_PATH" environment variable is not set');
@@ -13,7 +14,9 @@ if (!process.env.IMAGE_PATH) {
     throw Error('"IMAGE_PATH" environment variable is not set');
 }
 
-const sourceImage = imread(process.env.IMAGE_PATH);
+const pathToImage = process.env.IMAGE_PATH.toString();
+
+const sourceImage = imread(pathToImage);
 
 const ieCore = new Core();
 
@@ -47,24 +50,21 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     inputBlob.fillWithU8(data);
 }
 
-inferRequest.setCompletionCallback(()=>{
+inferRequest.infer();
 
-    const outputInfo = network.getOutputsInfo();
-    const outputLayerName = outputInfo[0].name;
+const outputInfo = network.getOutputsInfo();
 
-    const outputBlob = inferRequest.getBlob(outputLayerName);
+const outputLayerName = outputInfo[0].name;
 
-    const inferenceResults = outputBlob.data();
+const outputBlob = inferRequest.getBlob(outputLayerName);
 
-    const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
+const outData: number[] = outputBlob.data();
+const boxes: ObjectDetectionPrediction[] = parseSSDResults(outData, outputBlob.getDims());
 
-    classificationResults.forEach((inferResultForImage: number[]) => {
-        printClassificationResult(inferResultForImage);
-    })
-});
 
-inferRequest.startAsync();
+boxes.forEach((box: ObjectDetectionPrediction) => {
+    drawBoxInImage(pathToImage, 'out.png', box);
+})
 
-console.log("End of the script");
+console.log('Done');
 
-export {}
