@@ -1,13 +1,13 @@
 import { imread, Mat, Vec3 } from 'opencv4nodejs';
 import { size } from 'lodash';
 
-const { Core, CNNNetwork } = require('bindings')('InferenceEngineJS');
+const { Core } = require('../lib/inference_engine');
 
-if (!process.env.MODELS_PATH) {
+if (!process.env.MODEL_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
 
-const patToModel = process.env.MODELS_PATH;
+const patToModel = process.env.MODEL_PATH;
 
 if (!process.env.IMAGE_PATH) {
     throw Error('"IMAGE_PATH" environment variable is not set');
