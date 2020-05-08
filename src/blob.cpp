@@ -6,7 +6,7 @@ Napi::Object InferenceEngineJS::Blob::Init(Napi::Env env, Napi::Object exports) 
     Napi::Function func = DefineClass(env, "Blob", {
             InstanceMethod("fillWithU8", &Blob::fillWithU8),
             InstanceMethod("getDims", &Blob::getDims),
-            InstanceMethod("getClassificationResult", &Blob::getClassificationResult),
+            InstanceMethod("data", &Blob::data),
     });
 
     constructor = Napi::Persistent(func);
@@ -41,37 +41,16 @@ void InferenceEngineJS::Blob::fillWithU8(const Napi::CallbackInfo &info) {
     }
 }
 
-Napi::Value InferenceEngineJS::Blob::getClassificationResult(const Napi::CallbackInfo &info) {
+Napi::Value InferenceEngineJS::Blob::data(const Napi::CallbackInfo &info) {
     auto env = info.Env();
     auto dims = this->_ieBlobPtr->getTensorDesc().getDims();
+    using blobType = InferenceEngine::PrecisionTrait<InferenceEngine::Precision::FP32>::value_type;
+    auto blob = dynamic_cast<InferenceEngine::TBlob<blobType> &>(*(this->_ieBlobPtr)).data();
 
     Napi::Array output = Napi::Array::New(env, dims[0]);
 
-    size_t rank = dims.size();
-    if (!rank || !dims[0]) {
-        Napi::Error::New(env, "Cannot parse argument").ThrowAsJavaScriptException();
-        return env.Undefined();
-    }
-
-    size_t batchSize = dims[0];
-    std::vector<unsigned> indexes(this->_ieBlobPtr->size() / batchSize);
-    using blobType = InferenceEngine::PrecisionTrait<InferenceEngine::Precision::FP32>::value_type;
-    auto blob = dynamic_cast<InferenceEngine::TBlob<blobType> &>(*(this->_ieBlobPtr));
-
-    for (size_t i = 0; i < batchSize; i++) {
-
-        auto bachArray = Napi::Array::New(env, dims[1]);
-
-        size_t offset = i * (this->_ieBlobPtr->size() / batchSize);
-        blobType *batchData = blob.data();
-        batchData += offset;
-
-        for (std::size_t j = 0; j < dims[1]; j++) {
-            auto value = batchData[j];
-            bachArray[j] = Napi::Number::New(env, value);
-        }
-
-        output[i] = bachArray;
+    for (size_t i=0; i< this->_ieBlobPtr->size(); i++){
+        output[i] = Napi::Number::New(env, blob[i]);
     }
     return output;
 }

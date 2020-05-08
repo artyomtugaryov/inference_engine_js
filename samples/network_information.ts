@@ -1,13 +1,14 @@
+const path = require('path')
 const ie = require('bindings')('InferenceEngineJS');
 
 if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
-const patToModel = `${process.env.MODELS_PATH}/classification/inception_v3/inception_v3.`;
+const patToModel = path.process.env.MODEL_PATH.split('.').slice(0, -1).join('.');
 
 const ieCore = ie.Core()
 
-const network = new ieCore.readNetwork(`${patToModel}xml`, `${patToModel}bin`);
+const network = new ieCore.readNetwork(`${patToModel}.xml`, `${patToModel}.bin`);
 
 console.log(`Batch size of the ${network.getName()} network is ${network.getBatchSize()}.`);
 
