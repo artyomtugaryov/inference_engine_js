@@ -13,7 +13,7 @@
       "libraries": [
         "<!@(node -p \"process.env.INTEL_OPENVINO_DIR\")/deployment_tools/inference_engine/lib/intel64/libinference_engine.so"
       ],
-      "target_name": "InferenceEngineJS",
+      "target_name": "inference_engine_js",
       "sources":  [
         '<!@(ls -1 src/*.cpp)'
       ]
