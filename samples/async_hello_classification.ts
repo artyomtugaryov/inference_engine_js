@@ -1,6 +1,6 @@
 import { imread } from 'opencv4nodejs';
 import { size } from 'lodash';
-import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
+import { toCHWArray, printClassificationResult, parseClassificationResults } from './common';
 const { Core } = require('../lib/inference_engine');
 
 if (!process.env.MODEL_PATH) {
