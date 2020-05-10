@@ -1,4 +1,4 @@
-const { Core } = require('bindings')('InferenceEngineJS');
+const { Core } = require('../lib/inference_engine');
 
 const ieCore = new Core();
 

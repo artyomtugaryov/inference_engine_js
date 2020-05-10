@@ -1,7 +1,7 @@
 import { imread } from 'opencv4nodejs';
 import { size } from 'lodash';
-import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
-const { Core } = require('bindings')('InferenceEngineJS');
+import { toCHWArray, printClassificationResult, parseClassificationResults } from './common';
+const { Core } = require('../lib/inference_engine');
 
 if (!process.env.MODEL_PATH) {
     throw Error('"MODEL_PATH" environment variable is not set');
@@ -16,8 +16,6 @@ if (!process.env.IMAGE_PATH) {
 const sourceImage = imread(process.env.IMAGE_PATH);
 
 const ieCore = new Core();
-
-//TODO: Load Extensions
 
 const network = ieCore.readNetwork(`${patToModel}.xml`, `${patToModel}.bin`);
 

@@ -1,12 +1,12 @@
 const path = require('path')
-const ie = require('bindings')('InferenceEngineJS');
+const { Core } = require('../lib/inference_engine');
 
 if (!process.env.MODELS_PATH) {
     throw Error('"MODELS_PATH" environment variable is not set');
 }
 const patToModel = path.process.env.MODEL_PATH.split('.').slice(0, -1).join('.');
 
-const ieCore = ie.Core()
+const ieCore = Core()
 
 const network = new ieCore.readNetwork(`${patToModel}.xml`, `${patToModel}.bin`);
 

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.9)
 
-project(InferenceEngineJS)
+project(inference_engine_js)
 
 set(CMAKE_CXX_STANDARD 11)
 

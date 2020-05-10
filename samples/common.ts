@@ -1,4 +1,4 @@
-import {Mat, Vec3, imread, Rect, imwrite} from "opencv4nodejs";
+import { Mat, Vec3, imread, Rect, imwrite } from "opencv4nodejs";
 
 function toCHWArray(image: Mat): number[] {
     const result = [];

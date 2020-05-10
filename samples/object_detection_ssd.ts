@@ -1,8 +1,8 @@
-import {imread} from 'opencv4nodejs';
-import {size} from 'lodash';
-import {drawBoxInImage, ObjectDetectionPrediction, parseSSDResults, toCHWArray} from "./common";
+import { imread } from 'opencv4nodejs';
+import { size } from 'lodash';
+import { drawBoxInImage, ObjectDetectionPrediction, parseSSDResults, toCHWArray } from "./common";
 
-const {Core} = require('bindings')('InferenceEngineJS');
+const { Core } = require('../lib/inference_engine');
 
 if (!process.env.MODEL_PATH) {
     throw Error('"MODEL_PATH" environment variable is not set');
