@@ -6,7 +6,8 @@
     "type": "git",
     "url": "git://github.com/artyomtugaryov/inference_engine_js.git"
   },
-  "main": "tsc && node ./js-build/hello_query_device.js",
+  "main": "./lib/inference_engine.js",
+  "typings": "lib/index.d.ts",
   "scripts": {
     "build": "node-gyp rebuild -j 12 --verbose",
     "tsc": "tsc",
@@ -41,5 +42,5 @@
     "eslint-plugin-import": "^2.18.2",
     "ts-node-dev": "^1.0.0-pre.44",
     "typescript": "^3.7.3"
-  }
+  },
 }
