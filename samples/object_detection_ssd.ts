@@ -1,8 +1,8 @@
 import { imread } from 'opencv4nodejs';
 import { size } from 'lodash';
-import { drawBoxInImage, ObjectDetectionPrediction, parseSSDResults, toCHWArray } from "./common";
+import { drawBoxInImage, } from "./common";
 
-const { Core } = require('../lib/inference_engine');
+const { Core, helpers } = require('../lib/inference_engine');
 
 if (!process.env.MODEL_PATH) {
     throw Error('"MODEL_PATH" environment variable is not set');
@@ -46,7 +46,7 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     const inputBlob = inferRequest.getBlob(inputLayerName);
     const dims = inputBlob.getDims();
     const image = sourceImage.resize(dims[2], dims[3]);
-    const data = toCHWArray(image);
+    const data = helpers.toCHWArray(image);
     inputBlob.fillWithU8(data);
 }
 
@@ -59,7 +59,7 @@ const outputLayerName = outputInfo[0].name;
 const outputBlob = inferRequest.getBlob(outputLayerName);
 
 const outData: number[] = outputBlob.data();
-const boxes: ObjectDetectionPrediction[] = parseSSDResults(outData, outputBlob.getDims());
+const boxes: ObjectDetectionPrediction[] = helpers.parseSSDResults(outData, outputBlob.getDims());
 
 
 boxes.forEach((box: ObjectDetectionPrediction) => {

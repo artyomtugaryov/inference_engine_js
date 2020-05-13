@@ -1,7 +1,7 @@
 import { imread } from 'opencv4nodejs';
 import { size } from 'lodash';
-import { toCHWArray, printClassificationResult, parseClassificationResults } from './common';
-const { Core } = require('../lib/inference_engine');
+import { printClassificationResult } from './common';
+const { Core, helpers } = require('../lib/inference_engine');
 
 if (!process.env.MODEL_PATH) {
     throw Error('"MODEL_PATH" environment variable is not set');
@@ -43,7 +43,7 @@ for (let i = 0, len = network.getInputsInfo().length; i < len; i++) {
     const inputBlob = inferRequest.getBlob(inputLayerName);
     const dims = inputBlob.getDims();
     const image = sourceImage.resize(dims[2], dims[3]);
-    const data = toCHWArray(image);
+    const data = helpers.toCHWArray(image);
     inputBlob.fillWithU8(data);
 }
 
@@ -56,7 +56,7 @@ inferRequest.setCompletionCallback(()=>{
 
     const inferenceResults = outputBlob.data();
 
-    const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
+    const classificationResults = helpers.parseClassificationResults(inferenceResults, outputBlob.getDims());
 
     classificationResults.forEach((inferResultForImage: number[]) => {
         printClassificationResult(inferResultForImage);

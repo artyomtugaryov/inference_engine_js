@@ -1,8 +1,8 @@
 const path = require('path')
 const { Core } = require('../lib/inference_engine');
 
-if (!process.env.MODELS_PATH) {
-    throw Error('"MODELS_PATH" environment variable is not set');
+if (!process.env.MODEL_PATH) {
+    throw Error('"MODEL_PATH" environment variable is not set');
 }
 const patToModel = path.process.env.MODEL_PATH.split('.').slice(0, -1).join('.');
 
