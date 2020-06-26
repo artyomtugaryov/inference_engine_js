@@ -1,17 +1,30 @@
-#ifndef INFERENCEENGINE_JS_CNN_NETWORK_H
-#define INFERENCEENGINE_JS_CNN_NETWORK_H
+#ifndef INFERENCE_ENGINE_JS_CNN_NETWORK_H
+#define INFERENCE_ENGINE_JS_CNN_NETWORK_H
 
 #include <napi.h>
 
 #include <ie_core.hpp>
 #include <inference_engine.hpp>
 
+using namespace InferenceEngine;
+using namespace Napi;
+
 namespace InferenceEngineJS {
     class CNNNetwork : public Napi::ObjectWrap<CNNNetwork> {
     public:
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
+        static void NewInstanceAsync(Napi::Env env,
+                                     const Napi::Value &model,
+                                     const Napi::Value &weights,
+                                     const std::shared_ptr<InferenceEngine::Core> &core,
+                                     Napi::Promise::Deferred &deferred);
+
+        static Napi::FunctionReference constructor;
+
         explicit CNNNetwork(const Napi::CallbackInfo &info);
+
+        void setCNNNetwork(InferenceEngine::CNNNetwork& cnnNetwork);
 
         void setBatchSize(const Napi::CallbackInfo &info);
 
@@ -25,12 +38,35 @@ namespace InferenceEngineJS {
 
         Napi::Value getOutputsInfo(const Napi::CallbackInfo &info);
 
-        InferenceEngine::CNNNetwork* getCNNNetworkPtr();
+        InferenceEngine::CNNNetwork *getCNNNetworkPtr();
 
-        static Napi::FunctionReference constructor;
     private:
-
         InferenceEngine::CNNNetwork _ieNetwork;
     };
+
+    class ReadNetworkAsyncWorker : public Napi::AsyncWorker {
+    public:
+        ReadNetworkAsyncWorker(Napi::Env &env,
+                               const Napi::Value &model,
+                               const Napi::Value &weights,
+                               const std::shared_ptr<InferenceEngine::Core> &core,
+                               Napi::Promise::Deferred &deferred);
+
+        ~ReadNetworkAsyncWorker() {}
+
+        void Execute();
+
+        void OnOK();
+
+        void OnError(Napi::Error const &error);
+
+    private:
+        InferenceEngine::CNNNetwork _ieNetwork;
+        std::shared_ptr<InferenceEngine::Core> _core;
+        std::string _model_path;
+        std::string _weights_path;
+        Napi::Env _env;
+        Napi::Promise::Deferred _deferred;
+    };
 }
-#endif //INFERENCEENGINE_JS_CNN_NETWORK_H
+#endif //INFERENCE_ENGINE_JS_CNN_NETWORK_H

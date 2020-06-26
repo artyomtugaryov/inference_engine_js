@@ -7,7 +7,7 @@ export class Core {
 
     getVersion(): string;
 
-    readNetwork(xmlFile: string, binFile: string): CNNNetwork;
+    readNetwork(xmlFile: string, binFile: string): Promise<CNNNetwork>;
 
     loadNetwork(network: CNNNetwork): null;
 }
