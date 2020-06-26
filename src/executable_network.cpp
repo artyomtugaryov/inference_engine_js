@@ -18,24 +18,16 @@ Napi::Object InferenceEngineJS::ExecutableNetwork::Init(Napi::Env env, Napi::Obj
     return exports;
 }
 
-InferenceEngineJS::ExecutableNetwork::ExecutableNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<ExecutableNetwork>(info) {
-    if (info[0].IsUndefined()) {
-        Napi::Error::New(info.Env(), "Set pointer to CNNNetwork to InferenceEngineJS::ExecutableNetwork constructor for initialize").ThrowAsJavaScriptException();
-        return;
-    }
-    if (info[1].IsUndefined()) {
-        Napi::Error::New(info.Env(), "Set pointer to Core to InferenceEngineJS::ExecutableNetwork constructor for initialize").ThrowAsJavaScriptException();
-        return;
-    }
-    if (info[1].IsUndefined()) {
-        Napi::Error::New(info.Env(), "Set device to InferenceEngineJS::ExecutableNetwork constructor for initialize").ThrowAsJavaScriptException();
-        return;
-    }
-    auto cnnNetworkPtr = info[0].As<Napi::External<InferenceEngine::CNNNetwork>>().Data();
-    auto corePtr = info[1].As<Napi::External<InferenceEngine::Core>>().Data();
-    auto device = std::string(info[2].As<Napi::String>());
-    this->_ieExecNetwork = corePtr->LoadNetwork(*cnnNetworkPtr, device);
+void InferenceEngineJS::ExecutableNetwork::NewInstanceAsync(Napi::Env &env,
+                                                            const std::shared_ptr<InferenceEngine::Core> &core,
+                                                            const InferenceEngine::CNNNetwork* network,
+                                                            const Napi::String &device,
+                                                            Napi::Promise::Deferred &deferred) {
+    auto load_network_worker = new InferenceEngineJS::LoadNetworkAsyncWorker(env, core, network, device, deferred);
+    load_network_worker->Queue();
 }
+
+InferenceEngineJS::ExecutableNetwork::ExecutableNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<ExecutableNetwork>(info) {}
 
 Napi::FunctionReference InferenceEngineJS::ExecutableNetwork::constructor;
 
@@ -46,3 +38,41 @@ Napi::Value InferenceEngineJS::ExecutableNetwork::createInferRequest(const Napi:
     });
     return inferRequest;
 }
+
+void InferenceEngineJS::ExecutableNetwork::setExecutableNetwork(InferenceEngine::ExecutableNetwork &execNetwork) {
+    this->_ieExecNetwork = execNetwork;
+}
+
+InferenceEngineJS::LoadNetworkAsyncWorker::LoadNetworkAsyncWorker(Napi::Env &env,
+                                                                  const std::shared_ptr<InferenceEngine::Core> &core,
+                                                                  const InferenceEngine::CNNNetwork* cnnNetwork,
+                                                                  const Napi::String &device,
+                                                                  Napi::Promise::Deferred &deferred)
+        : Napi::AsyncWorker(env),
+          _core(core),
+          _cnnNetwork(cnnNetwork),
+          _device(device.As<Napi::String>()),
+          _env(env),
+          _deferred(deferred) {}
+
+
+void InferenceEngineJS::LoadNetworkAsyncWorker::Execute() {
+    try {
+        this->_ieExecutableNetwork = _core->LoadNetwork(*(this->_cnnNetwork), this->_device);
+    } catch (const std::exception &error) {
+        Napi::AsyncWorker::SetError(error.what());
+    }
+}
+
+void InferenceEngineJS::LoadNetworkAsyncWorker::OnOK() {
+    Napi::EscapableHandleScope scope(this->_env);
+    auto executableNetworkObj = InferenceEngineJS::ExecutableNetwork::constructor.New({});
+    auto executableNetwork = Napi::ObjectWrap<InferenceEngineJS::ExecutableNetwork>::Unwrap(executableNetworkObj);
+    executableNetwork->setExecutableNetwork(this->_ieExecutableNetwork);
+    this->_deferred.Resolve(scope.Escape(napi_value(executableNetworkObj)).ToObject());
+}
+
+void InferenceEngineJS::LoadNetworkAsyncWorker::OnError(Napi::Error const &error) {
+    this->_deferred.Reject(error.Value());
+}
+

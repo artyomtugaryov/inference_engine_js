@@ -17,7 +17,7 @@ namespace InferenceEngineJS {
         static void NewInstanceAsync(Napi::Env env,
                                      const Napi::Value &model,
                                      const Napi::Value &weights,
-                                     const std::shared_ptr<InferenceEngine::Core> &core,
+                                     const InferenceEngine::Core *core,
                                      Napi::Promise::Deferred &deferred);
 
         static Napi::FunctionReference constructor;
@@ -49,7 +49,7 @@ namespace InferenceEngineJS {
         ReadNetworkAsyncWorker(Napi::Env &env,
                                const Napi::Value &model,
                                const Napi::Value &weights,
-                               const std::shared_ptr<InferenceEngine::Core> &core,
+                               const InferenceEngine::Core* core,
                                Napi::Promise::Deferred &deferred);
 
         ~ReadNetworkAsyncWorker() {}
@@ -62,9 +62,9 @@ namespace InferenceEngineJS {
 
     private:
         InferenceEngine::CNNNetwork _ieNetwork;
-        std::shared_ptr<InferenceEngine::Core> _core;
-        std::string _model_path;
-        std::string _weights_path;
+        const InferenceEngine::Core* _core;
+        const std::string _model_path;
+        const std::string _weights_path;
         Napi::Env _env;
         Napi::Promise::Deferred _deferred;
     };

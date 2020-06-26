@@ -71,7 +71,7 @@ Napi::Value InferenceEngineJS::Core::readNetwork(const Napi::CallbackInfo &info)
     auto model = info[0].ToString();
     auto weights = info[1].ToString();
     auto deferred = Napi::Promise::Deferred::New(env);
-    InferenceEngineJS::CNNNetwork::NewInstanceAsync(env, model, weights, this->_ieCore, deferred);
+    InferenceEngineJS::CNNNetwork::NewInstanceAsync(env, model, weights, this->_ieCore.get(), deferred);
     return deferred.Promise();
 }
 
@@ -132,13 +132,10 @@ Napi::Value InferenceEngineJS::Core::loadNetwork(const Napi::CallbackInfo &info)
                          "Set device to InferenceEngineJS::Core loadNetwork for load Network").ThrowAsJavaScriptException();
         return env.Undefined();
     }
+
     auto ieNetworkPtr = Napi::ObjectWrap<InferenceEngineJS::CNNNetwork>::Unwrap(info[0].As<Napi::Object>());
-    auto execNetworkObject = ExecutableNetwork::constructor.New({
-                                                                        Napi::External<InferenceEngine::CNNNetwork>::New(
-                                                                                env, ieNetworkPtr->getCNNNetworkPtr()),
-                                                                        Napi::External<InferenceEngine::Core>::New(env,
-                                                                                                                   this->_ieCore.get()),
-                                                                        info[1]
-                                                                });
-    return execNetworkObject;
+    const auto device = info[1].As<Napi::String>();
+    auto deferred = Napi::Promise::Deferred::New(env);
+    InferenceEngineJS::ExecutableNetwork::NewInstanceAsync(env, this->_ieCore, ieNetworkPtr->getCNNNetworkPtr(), device, deferred);
+    return deferred.Promise();
 }

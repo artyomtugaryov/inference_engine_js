@@ -1,4 +1,5 @@
-import {CNNNetwork} from "./cnn_network";
+import { CNNNetwork } from './cnn_network';
+import { ExecutableNetwork } from './executable_network';
 
 export class Core {
     getAvailableDevices(): string[];
@@ -9,5 +10,5 @@ export class Core {
 
     readNetwork(xmlFile: string, binFile: string): Promise<CNNNetwork>;
 
-    loadNetwork(network: CNNNetwork): null;
+    loadNetwork(network: CNNNetwork, device: string): Promise<ExecutableNetwork>;
 }

@@ -25,10 +25,9 @@ Napi::Object InferenceEngineJS::CNNNetwork::Init(Napi::Env env, Napi::Object exp
 void InferenceEngineJS::CNNNetwork::NewInstanceAsync(Napi::Env env,
                                                      const Napi::Value &model_path,
                                                      const Napi::Value &weights_path,
-                                                     const std::shared_ptr<InferenceEngine::Core> &core,
+                                                     const InferenceEngine::Core* core,
                                                      Napi::Promise::Deferred &deferred) {
-    auto read_network_worker = new InferenceEngineJS::ReadNetworkAsyncWorker(env, model_path, weights_path, core,
-                                                                             deferred);
+    auto read_network_worker = new InferenceEngineJS::ReadNetworkAsyncWorker(env, model_path, weights_path, core, deferred);
     read_network_worker->Queue();
 }
 
@@ -36,7 +35,7 @@ Napi::FunctionReference InferenceEngineJS::CNNNetwork::constructor;
 
 InferenceEngineJS::CNNNetwork::CNNNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<CNNNetwork>(info) {}
 
-void InferenceEngineJS::CNNNetwork::setCNNNetwork(InferenceEngine::CNNNetwork& cnnNetwork){
+void InferenceEngineJS::CNNNetwork::setCNNNetwork(InferenceEngine::CNNNetwork &cnnNetwork) {
     this->_ieNetwork = cnnNetwork;
 }
 
@@ -108,12 +107,12 @@ InferenceEngine::CNNNetwork *InferenceEngineJS::CNNNetwork::getCNNNetworkPtr() {
 InferenceEngineJS::ReadNetworkAsyncWorker::ReadNetworkAsyncWorker(Napi::Env &env,
                                                                   const Napi::Value &model,
                                                                   const Napi::Value &weights,
-                                                                  const std::shared_ptr<InferenceEngine::Core> &core,
+                                                                  const InferenceEngine::Core* core,
                                                                   Napi::Promise::Deferred &deferred)
         : Napi::AsyncWorker(env),
-          _core(core),
           _model_path(model.As<Napi::String>()),
           _weights_path(weights.As<Napi::String>()),
+          _core(core),
           _env(env),
           _deferred(deferred) {}
 
