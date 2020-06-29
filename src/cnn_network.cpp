@@ -4,9 +4,10 @@
 #include "input_info.h"
 #include "data.h"
 
+const char *InferenceEngineJS::CNNNetwork::classUTF8Name = "CNNNetwork";
+
 Napi::Object InferenceEngineJS::CNNNetwork::Init(Napi::Env env, Napi::Object exports) {
-    const auto classUTF8Name = "CNNNetwork";
-    auto func = DefineClass(env, classUTF8Name, {
+    auto functions = DefineClass(env, InferenceEngineJS::CNNNetwork::classUTF8Name, {
             InstanceMethod("setBatchSize", &CNNNetwork::setBatchSize),
             InstanceMethod("getBatchSize", &CNNNetwork::getBatchSize),
             InstanceMethod("getName", &CNNNetwork::getName),
@@ -16,18 +17,18 @@ Napi::Object InferenceEngineJS::CNNNetwork::Init(Napi::Env env, Napi::Object exp
             InstanceMethod("getOutputsInfo", &CNNNetwork::getOutputsInfo),
     });
 
-    constructor = Napi::Persistent(func);
+    constructor = Napi::Persistent(functions);
     constructor.SuppressDestruct();
-    exports.Set(classUTF8Name, func);
+    exports.Set(InferenceEngineJS::CNNNetwork::classUTF8Name, functions);
     return exports;
 }
 
 void InferenceEngineJS::CNNNetwork::NewInstanceAsync(Napi::Env env,
-                                                     const Napi::Value &model_path,
-                                                     const Napi::Value &weights_path,
-                                                     const InferenceEngine::Core* core,
+                                                     const Napi::Value &modelPath,
+                                                     const Napi::Value &weightsPath,
+                                                     const std::shared_ptr<InferenceEngine::Core> &ieCore,
                                                      Napi::Promise::Deferred &deferred) {
-    auto read_network_worker = new InferenceEngineJS::ReadNetworkAsyncWorker(env, model_path, weights_path, core, deferred);
+    auto read_network_worker = new InferenceEngineJS::ReadNetworkAsyncWorker(env, modelPath, weightsPath, ieCore, deferred);
     read_network_worker->Queue();
 }
 
@@ -105,21 +106,21 @@ InferenceEngine::CNNNetwork *InferenceEngineJS::CNNNetwork::getCNNNetworkPtr() {
 }
 
 InferenceEngineJS::ReadNetworkAsyncWorker::ReadNetworkAsyncWorker(Napi::Env &env,
-                                                                  const Napi::Value &model,
-                                                                  const Napi::Value &weights,
-                                                                  const InferenceEngine::Core* core,
+                                                                  const Napi::Value &modelPath,
+                                                                  const Napi::Value &weightsPath,
+                                                                  const std::shared_ptr<InferenceEngine::Core> &ieCore,
                                                                   Napi::Promise::Deferred &deferred)
         : Napi::AsyncWorker(env),
-          _model_path(model.As<Napi::String>()),
-          _weights_path(weights.As<Napi::String>()),
-          _core(core),
+          _modelPath(modelPath.As<Napi::String>()),
+          _weightsPath(weightsPath.As<Napi::String>()),
+          _ieCore(ieCore),
           _env(env),
           _deferred(deferred) {}
 
 
 void InferenceEngineJS::ReadNetworkAsyncWorker::Execute() {
     try {
-        this->_ieNetwork = _core->ReadNetwork(this->_model_path, this->_weights_path);
+        this->_ieNetwork = _ieCore->ReadNetwork(this->_modelPath, this->_weightsPath);
     } catch (const std::exception &error) {
         Napi::AsyncWorker::SetError(error.what());
     }

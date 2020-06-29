@@ -6,8 +6,6 @@
 #include <ie_core.hpp>
 #include <inference_engine.hpp>
 
-using namespace InferenceEngine;
-using namespace Napi;
 
 namespace InferenceEngineJS {
     class CNNNetwork : public Napi::ObjectWrap<CNNNetwork> {
@@ -15,16 +13,14 @@ namespace InferenceEngineJS {
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
         static void NewInstanceAsync(Napi::Env env,
-                                     const Napi::Value &model,
-                                     const Napi::Value &weights,
-                                     const InferenceEngine::Core *core,
+                                     const Napi::Value &modelPath,
+                                     const Napi::Value &weightsPath,
+                                     const std::shared_ptr<InferenceEngine::Core> &ieCore,
                                      Napi::Promise::Deferred &deferred);
 
         static Napi::FunctionReference constructor;
 
         explicit CNNNetwork(const Napi::CallbackInfo &info);
-
-        void setCNNNetwork(InferenceEngine::CNNNetwork& cnnNetwork);
 
         void setBatchSize(const Napi::CallbackInfo &info);
 
@@ -40,16 +36,20 @@ namespace InferenceEngineJS {
 
         InferenceEngine::CNNNetwork *getCNNNetworkPtr();
 
+        void setCNNNetwork(InferenceEngine::CNNNetwork &cnnNetwork);
+
     private:
+        static const char *classUTF8Name;
+
         InferenceEngine::CNNNetwork _ieNetwork;
     };
 
     class ReadNetworkAsyncWorker : public Napi::AsyncWorker {
     public:
         ReadNetworkAsyncWorker(Napi::Env &env,
-                               const Napi::Value &model,
-                               const Napi::Value &weights,
-                               const InferenceEngine::Core* core,
+                               const Napi::Value &modelPath,
+                               const Napi::Value &weightsPath,
+                               const std::shared_ptr<InferenceEngine::Core> &ieCore,
                                Napi::Promise::Deferred &deferred);
 
         ~ReadNetworkAsyncWorker() {}
@@ -62,9 +62,9 @@ namespace InferenceEngineJS {
 
     private:
         InferenceEngine::CNNNetwork _ieNetwork;
-        const InferenceEngine::Core* _core;
-        const std::string _model_path;
-        const std::string _weights_path;
+        const std::shared_ptr<InferenceEngine::Core> _ieCore;
+        const std::string _modelPath;
+        const std::string _weightsPath;
         Napi::Env _env;
         Napi::Promise::Deferred _deferred;
     };

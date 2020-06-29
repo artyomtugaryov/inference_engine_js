@@ -39,7 +39,7 @@ async function main() {
 
     network.setBatchSize(1);
 
-    const executableNetwork = ieCore.loadNetwork(network, 'CPU');
+    const executableNetwork = await ieCore.loadNetwork(network, 'CPU');
 
     const inferRequest = executableNetwork.createInferRequest();
 

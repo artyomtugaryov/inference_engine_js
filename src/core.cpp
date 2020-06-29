@@ -71,7 +71,7 @@ Napi::Value InferenceEngineJS::Core::readNetwork(const Napi::CallbackInfo &info)
     auto model = info[0].ToString();
     auto weights = info[1].ToString();
     auto deferred = Napi::Promise::Deferred::New(env);
-    InferenceEngineJS::CNNNetwork::NewInstanceAsync(env, model, weights, this->_ieCore.get(), deferred);
+    InferenceEngineJS::CNNNetwork::NewInstanceAsync(env, model, weights, this->_ieCore, deferred);
     return deferred.Promise();
 }
 
