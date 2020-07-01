@@ -1,5 +1,5 @@
-#ifndef INFERENCEENGINE_JS_INFER_REQUEST_H
-#define INFERENCEENGINE_JS_INFER_REQUEST_H
+#ifndef INFERENCE_ENGINE_JS_INFER_REQUEST_H
+#define INFERENCE_ENGINE_JS_INFER_REQUEST_H
 
 #include <napi.h>
 
@@ -27,9 +27,8 @@ namespace InferenceEngineJS {
         InferenceEngine::InferRequest::Ptr _inferRequestPtr;
         
         Napi::ThreadSafeFunction _threadSafeFunction;
-
     };
 }
 
 
-#endif //INFERENCEENGINE_JS_INFER_REQUEST_H
+#endif //INFERENCE_ENGINE_JS_INFER_REQUEST_H
