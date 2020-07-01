@@ -1,9 +1,10 @@
 #include "common.h"
 #include "input_info.h"
 
+const char *InferenceEngineJS::InputInfo::classUTF8Name = "InputInfo";
 
 Napi::Object InferenceEngineJS::InputInfo::Init(Napi::Env env, Napi::Object exports) {
-    Napi::Function func = DefineClass(env, "InputInfo", {
+    Napi::Function func = DefineClass(env, InferenceEngineJS::InputInfo::classUTF8Name, {
             InstanceMethod("getDims", &InputInfo::getDims),
             InstanceMethod("setPrecision", &InputInfo::setPrecision),
             InstanceMethod("setLayout", &InputInfo::setLayout),
@@ -11,29 +12,18 @@ Napi::Object InferenceEngineJS::InputInfo::Init(Napi::Env env, Napi::Object expo
 
     constructor = Napi::Persistent(func);
     constructor.SuppressDestruct();
-    exports.Set("InputInfo", func);
+    exports.Set(InferenceEngineJS::InputInfo::classUTF8Name, func);
     return exports;
 }
 
-InferenceEngineJS::InputInfo::InputInfo(const Napi::CallbackInfo &info) : Napi::ObjectWrap<InputInfo>(info) {
-    if (info[0].IsUndefined()) {
-        Napi::Error::New(info.Env(),"Set pointer to CNNNetwork to InferenceEngineJS::InputInfo constructor for initialize").ThrowAsJavaScriptException();
-        return;
-    }
-    if (info[1].IsUndefined()) {
-        Napi::Error::New(info.Env(),"Set name of Input to InferenceEngineJS::InputInfo constructor for initialize").ThrowAsJavaScriptException();
-        return;
-    }
-    auto cnnNetwork = info[0].As<Napi::External<InferenceEngine::CNNNetwork>>().Data();
-    auto inputInfoName = std::string(info[1].As<Napi::String>());
-
-    for(const auto &inputInfo: cnnNetwork->getInputsInfo()){
-        if (inputInfo.first == inputInfoName){
-            this->_ieInputInfo = inputInfo.second;
-            return;
-        }
-    }
+void InferenceEngineJS::InputInfo::NewInstanceAsync(Napi::Env env,
+                                                    const std::shared_ptr<InferenceEngine::CNNNetwork> &networkPtr,
+                                                    Napi::Promise::Deferred &deferred) {
+    auto createInputInfoWorker = new InferenceEngineJS::InputInfoFactoryAsyncWorker(env, networkPtr, deferred);
+    createInputInfoWorker->Queue();
 }
+
+InferenceEngineJS::InputInfo::InputInfo(const Napi::CallbackInfo &info) : Napi::ObjectWrap<InputInfo>(info) {}
 
 Napi::FunctionReference InferenceEngineJS::InputInfo::constructor;
 
@@ -48,8 +38,52 @@ void InferenceEngineJS::InputInfo::setPrecision(const Napi::CallbackInfo &info) 
     auto precision = InferenceEngine::Precision::FromStr(std::string(info[0].ToString()));
     this->_ieInputInfo->setPrecision(precision);
 }
+
 void InferenceEngineJS::InputInfo::setLayout(const Napi::CallbackInfo &info) {
     auto layout = layoutFromString(std::string(info[0].ToString()));
     this->_ieInputInfo->setLayout(layout);
 }
 
+void InferenceEngineJS::InputInfo::setInputInfo(InferenceEngine::InputInfo::Ptr ieInputInfo) {
+    this->_ieInputInfo = ieInputInfo;
+}
+
+
+InferenceEngineJS::InputInfoFactoryAsyncWorker::InputInfoFactoryAsyncWorker(Napi::Env &env,
+                                                                            const std::shared_ptr<InferenceEngine::CNNNetwork> &cnnNetworkPtr,
+                                                                            Napi::Promise::Deferred &deferred)
+        : Napi::AsyncWorker(env),
+          _cnnNetworkPtr(cnnNetworkPtr),
+          _env(env),
+          _deferred(deferred) {}
+
+void InferenceEngineJS::InputInfoFactoryAsyncWorker::Execute() {
+    try {
+        this->_inputInfoMap = this->_cnnNetworkPtr->getInputsInfo();
+    } catch (const std::exception &error) {
+        Napi::AsyncWorker::SetError(error.what());
+    }
+}
+
+void InferenceEngineJS::InputInfoFactoryAsyncWorker::OnOK() {
+    Napi::EscapableHandleScope scope(this->_env);
+    std::size_t i = 0;
+    auto result = Napi::Array::New(this->_env, this->_inputInfoMap.size());
+    for (const auto &inputInfo: this->_inputInfoMap) {
+        auto ieInputInfoObj = InferenceEngineJS::InputInfo::constructor.New({});
+        auto ieInputInfo = Napi::ObjectWrap<InferenceEngineJS::InputInfo>::Unwrap(ieInputInfoObj);
+        ieInputInfo->setInputInfo(inputInfo.second);
+
+        auto obj = Napi::Object::New(this->_env);
+        obj.Set("name", Napi::String::New(this->_env, inputInfo.first));
+        obj.Set("value", ieInputInfoObj);
+
+        result[i++] = obj;
+    }
+
+    this->_deferred.Resolve(scope.Escape(napi_value(result)).ToObject());
+}
+
+void InferenceEngineJS::InputInfoFactoryAsyncWorker::OnError(Napi::Error const &error) {
+    this->_deferred.Reject(error.Value());
+}

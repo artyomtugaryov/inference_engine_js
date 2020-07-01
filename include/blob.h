@@ -1,5 +1,5 @@
-#ifndef INFERENCEENGINE_JS_BLOB_H
-#define INFERENCEENGINE_JS_BLOB_H
+#ifndef INFERENCE_ENGINE_JS_BLOB_H
+#define INFERENCE_ENGINE_JS_BLOB_H
 
 #include <napi.h>
 
@@ -26,4 +26,4 @@ namespace InferenceEngineJS {
 
     };
 }
-#endif //INFERENCEENGINEJS_BLOB_H
+#endif //INFERENCE_ENGINE_JS_BLOB_H

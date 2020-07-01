@@ -1,5 +1,5 @@
-#ifndef INFERENCEENGINE_JS_DATA_H
-#define INFERENCEENGINE_JS_DATA_H
+#ifndef INFERENCE_ENGINE_JS_DATA_H
+#define INFERENCE_ENGINE_JS_DATA_H
 
 #include <napi.h>
 #include <inference_engine.hpp>
@@ -19,4 +19,4 @@ namespace InferenceEngineJS {
     };
 }
 
-#endif //INFERENCEENGINE_JS_DATA_H
+#endif //INFERENCE_ENGINE_JS_DATA_H

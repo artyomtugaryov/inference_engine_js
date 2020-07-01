@@ -20,7 +20,7 @@ Napi::Object InferenceEngineJS::ExecutableNetwork::Init(Napi::Env env, Napi::Obj
 
 void InferenceEngineJS::ExecutableNetwork::NewInstanceAsync(Napi::Env &env,
                                                             const std::shared_ptr<InferenceEngine::Core> &core,
-                                                            const InferenceEngine::CNNNetwork* network,
+                                                            const std::shared_ptr<InferenceEngine::CNNNetwork> &network,
                                                             const Napi::String &device,
                                                             Napi::Promise::Deferred &deferred) {
     auto load_network_worker = new InferenceEngineJS::LoadNetworkAsyncWorker(env, core, network, device, deferred);
@@ -44,13 +44,13 @@ void InferenceEngineJS::ExecutableNetwork::setExecutableNetwork(InferenceEngine:
 }
 
 InferenceEngineJS::LoadNetworkAsyncWorker::LoadNetworkAsyncWorker(Napi::Env &env,
-                                                                  const std::shared_ptr<InferenceEngine::Core> &core,
-                                                                  const InferenceEngine::CNNNetwork* cnnNetwork,
+                                                                  const std::shared_ptr<InferenceEngine::Core> &corePtr,
+                                                                  const std::shared_ptr<InferenceEngine::CNNNetwork> &cnnNetworkPtr,
                                                                   const Napi::String &device,
                                                                   Napi::Promise::Deferred &deferred)
         : Napi::AsyncWorker(env),
-          _core(core),
-          _cnnNetwork(cnnNetwork),
+          _corePtr(corePtr),
+          _cnnNetworkPtr(cnnNetworkPtr),
           _device(device.As<Napi::String>()),
           _env(env),
           _deferred(deferred) {}
@@ -58,7 +58,7 @@ InferenceEngineJS::LoadNetworkAsyncWorker::LoadNetworkAsyncWorker(Napi::Env &env
 
 void InferenceEngineJS::LoadNetworkAsyncWorker::Execute() {
     try {
-        this->_ieExecutableNetwork = _core->LoadNetwork(*(this->_cnnNetwork), this->_device);
+        this->_ieExecutableNetwork = _corePtr->LoadNetwork(*(this->_cnnNetworkPtr), this->_device);
     } catch (const std::exception &error) {
         Napi::AsyncWorker::SetError(error.what());
     }

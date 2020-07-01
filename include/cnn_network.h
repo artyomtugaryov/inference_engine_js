@@ -13,8 +13,8 @@ namespace InferenceEngineJS {
         static Napi::Object Init(Napi::Env env, Napi::Object exports);
 
         static void NewInstanceAsync(Napi::Env env,
-                                     const Napi::Value &modelPath,
-                                     const Napi::Value &weightsPath,
+                                     const Napi::String &modelPath,
+                                     const Napi::String &weightsPath,
                                      const std::shared_ptr<InferenceEngine::Core> &ieCore,
                                      Napi::Promise::Deferred &deferred);
 
@@ -34,14 +34,14 @@ namespace InferenceEngineJS {
 
         Napi::Value getOutputsInfo(const Napi::CallbackInfo &info);
 
-        InferenceEngine::CNNNetwork *getCNNNetworkPtr();
+        const std::shared_ptr<InferenceEngine::CNNNetwork> getCNNNetworkPtr();
 
-        void setCNNNetwork(InferenceEngine::CNNNetwork &cnnNetwork);
+        void fromNGraphFunction(const std::shared_ptr< const ngraph::Function > ngraphFunction);
 
     private:
         static const char *classUTF8Name;
 
-        InferenceEngine::CNNNetwork _ieNetwork;
+        std::shared_ptr<InferenceEngine::CNNNetwork> _ieNetwork;
     };
 
     class ReadNetworkAsyncWorker : public Napi::AsyncWorker {

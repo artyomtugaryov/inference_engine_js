@@ -1,5 +1,5 @@
-#ifndef INFERENCEENGINE_JS_CORE_H
-#define INFERENCEENGINE_JS_CORE_H
+#ifndef INFERENCE_ENGINE_JS_CORE_H
+#define INFERENCE_ENGINE_JS_CORE_H
 
 #include <vector>
 #include <array>
@@ -42,4 +42,4 @@ namespace InferenceEngineJS {
     };
 }
 
-#endif //INFERENCEENGINE_JS_CORE_H
+#endif //INFERENCE_ENGINE_JS_CORE_H

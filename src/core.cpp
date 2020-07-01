@@ -68,10 +68,10 @@ void InferenceEngineJS::Core::addExtension(const Napi::CallbackInfo &info) {
 
 Napi::Value InferenceEngineJS::Core::readNetwork(const Napi::CallbackInfo &info) {
     auto env = info.Env();
-    auto model = info[0].ToString();
-    auto weights = info[1].ToString();
+    auto modelPath = info[0].ToString();
+    auto weightsPAth = info[1].ToString();
     auto deferred = Napi::Promise::Deferred::New(env);
-    InferenceEngineJS::CNNNetwork::NewInstanceAsync(env, model, weights, this->_ieCore, deferred);
+    InferenceEngineJS::CNNNetwork::NewInstanceAsync(env, modelPath, weightsPAth, this->_ieCore, deferred);
     return deferred.Promise();
 }
 
