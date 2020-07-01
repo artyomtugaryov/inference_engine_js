@@ -1,8 +1,9 @@
-import { imread } from 'opencv4nodejs';
-import { size } from 'lodash';
-import { toCHWArray, printClassificationResult, parseClassificationResults } from './common';
+import {imread} from 'opencv4nodejs';
+import {size} from 'lodash';
+import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
+import {OutputInfoMap} from "../lib/typings/output_info";
 
-const { Core } = require('../lib/inference_engine');
+const {Core} = require('../lib/inference_engine');
 
 async function main() {
     if (!process.env.MODEL_PATH) {
@@ -21,7 +22,7 @@ async function main() {
 
     const network = await ieCore.readNetwork(`${patToModel}.xml`, `${patToModel}.bin`);
 
-    let inputInfo = network.getInputsInfo();
+    let inputInfo = await network.getInputsInfo();
 
     if (size(inputInfo) > 1) {
         throw Error('Sample supports topologies with 1 input only');
@@ -51,19 +52,18 @@ async function main() {
 
     inferRequest.infer();
 
-    const outputInfo = network.getOutputsInfo();
-    const outputLayerName = outputInfo[0].name;
+    network.getOutputsInfo().then((outputInfoMap: OutputInfoMap[]) => {
+        outputInfoMap.forEach((outputInfoMap: OutputInfoMap, index: number) => {
+            const outputLayerName = outputInfoMap.name
+            const outputBlob = inferRequest.getBlob(outputLayerName);
+            const inferenceResults = outputBlob.data();
+            const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
 
-    const outputBlob = inferRequest.getBlob(outputLayerName);
-
-    const inferResults = outputBlob.data();
-
-    const classificationResults = parseClassificationResults(inferResults, outputBlob.getDims());
-
-    classificationResults.forEach((inferResultForImage: number[]) => {
-        printClassificationResult(inferResultForImage);
-    })
-
+            classificationResults.forEach((inferResultForImage: number[]) => {
+                printClassificationResult(inferResultForImage);
+            })
+        })
+    });
 }
 
 main();

@@ -36,7 +36,7 @@ namespace InferenceEngineJS {
 
         const std::shared_ptr<InferenceEngine::CNNNetwork> getCNNNetworkPtr();
 
-        void fromNGraphFunction(const std::shared_ptr< const ngraph::Function > ngraphFunction);
+        void fromNgraphFunction(const std::shared_ptr< const ngraph::Function > ngraphFunction);
 
     private:
         static const char *classUTF8Name;

@@ -24,7 +24,7 @@ async function main() {
 
     const network = await ieCore.readNetwork(`${patToModel}.xml`, `${patToModel}.bin`);
 
-    let inputInfo = network.getInputsInfo();
+    let inputInfo = await network.getInputsInfo();
 
     if (size(inputInfo) > 1) {
         throw Error('Sample supports topologies with 1 input only');
@@ -54,7 +54,7 @@ async function main() {
 
     inferRequest.infer();
 
-    const outputInfo = network.getOutputsInfo();
+    const outputInfo = await network.getOutputsInfo();
 
     const outputLayerName = outputInfo[0].name;
 

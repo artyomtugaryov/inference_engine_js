@@ -1,9 +1,26 @@
 import {imread} from 'opencv4nodejs';
 import {size} from 'lodash';
 import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
-import {ExecutableNetwork, InferRequest, InputInfo, InputInfoMap} from "../lib";
+import {CNNNetwork, ExecutableNetwork, InferRequest, InputInfo, InputInfoMap} from "../lib";
+import {OutputInfoMap} from "../lib/typings/output_info";
 
 const {Core} = require('../lib/inference_engine');
+
+async function completionCallback(network: CNNNetwork, inferRequest: InferRequest) {
+    network.getOutputsInfo().then((outputInfoMap: OutputInfoMap[]) => {
+        outputInfoMap.forEach((outputInfoMap: OutputInfoMap, index: number) => {
+            const outputLayerName = outputInfoMap.name
+            const outputBlob = inferRequest.getBlob(outputLayerName);
+            const inferenceResults = outputBlob.data();
+            const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
+
+            classificationResults.forEach((inferResultForImage: number[]) => {
+                printClassificationResult(inferResultForImage);
+            })
+        })
+    });
+}
+
 
 async function main() {
     if (!process.env.MODEL_PATH) {
@@ -45,20 +62,8 @@ async function main() {
     const data = toCHWArray(image);
     inputBlob.fillWithU8(data);
 
-    inferRequest.setCompletionCallback(() => {
-
-        const outputInfo = network.getOutputsInfo();
-        const outputLayerName = outputInfo[0].name;
-
-        const outputBlob = inferRequest.getBlob(outputLayerName);
-
-        const inferenceResults = outputBlob.data();
-
-        const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
-
-        classificationResults.forEach((inferResultForImage: number[]) => {
-            printClassificationResult(inferResultForImage);
-        })
+    await inferRequest.setCompletionCallback(async () => {
+        await completionCallback(network, inferRequest)
     });
 
     inferRequest.startAsync();
@@ -67,6 +72,4 @@ async function main() {
 
 }
 
-main();
-
-console.log("End of the script");
+main().then(() => console.log("End of the script"));

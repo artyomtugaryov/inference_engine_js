@@ -39,7 +39,7 @@ Napi::FunctionReference InferenceEngineJS::CNNNetwork::constructor;
 
 InferenceEngineJS::CNNNetwork::CNNNetwork(const Napi::CallbackInfo &info) : Napi::ObjectWrap<CNNNetwork>(info) {}
 
-void InferenceEngineJS::CNNNetwork::fromNGraphFunction(const std::shared_ptr<const ngraph::Function> ngraphFunction) {
+void InferenceEngineJS::CNNNetwork::fromNgraphFunction(const std::shared_ptr<const ngraph::Function> ngraphFunction) {
     this->_ieNetwork = std::make_shared<InferenceEngine::CNNNetwork>(ngraphFunction);
 }
 
@@ -70,22 +70,9 @@ Napi::Value InferenceEngineJS::CNNNetwork::getInputsInfo(const Napi::CallbackInf
 
 Napi::Value InferenceEngineJS::CNNNetwork::getOutputsInfo(const Napi::CallbackInfo &info) {
     auto env = info.Env();
-    auto outputsDataMap = this->_ieNetwork->getOutputsInfo();
-    Napi::Array result = Napi::Array::New(env, outputsDataMap.size());
-    std::size_t i = 0;
-    auto extIENetwork = Napi::External<InferenceEngine::CNNNetwork>::New(env, this->_ieNetwork.get());
-    for (const auto &outputInfo: outputsDataMap) {
-
-        auto ieDataPtr = Data::constructor.New({extIENetwork, Napi::String::New(env, outputInfo.first)});
-
-        auto obj = Napi::Object::New(env);
-        obj.Set("name", outputInfo.first);
-        obj.Set("value", ieDataPtr);
-
-        result[i++] = obj;
-    }
-
-    return result;
+    auto deferred = Napi::Promise::Deferred::New(env);
+    InferenceEngineJS::Data::NewInstanceAsync(env, this->_ieNetwork, deferred);
+    return deferred.Promise();
 }
 
 const std::shared_ptr<InferenceEngine::CNNNetwork> InferenceEngineJS::CNNNetwork::getCNNNetworkPtr() {
@@ -117,7 +104,7 @@ void InferenceEngineJS::ReadNetworkAsyncWorker::OnOK() {
     Napi::EscapableHandleScope scope(this->_env);
     auto cnnNetworkObj = InferenceEngineJS::CNNNetwork::constructor.New({});
     auto cnnNetwork = Napi::ObjectWrap<InferenceEngineJS::CNNNetwork>::Unwrap(cnnNetworkObj);
-    cnnNetwork->fromNGraphFunction(this->_ieNetwork.getFunction());
+    cnnNetwork->fromNgraphFunction(this->_ieNetwork.getFunction());
     this->_deferred.Resolve(scope.Escape(napi_value(cnnNetworkObj)).ToObject());
 }
 

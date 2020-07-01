@@ -1,4 +1,5 @@
 import { InputInfoMap } from './input_info';
+import { OutputInfoMap } from './output_info';
 
 export class CNNNetwork {
     setBatchSize(batch: number): null;
@@ -13,5 +14,5 @@ export class CNNNetwork {
 
     getInputsInfo(): Promise<InputInfoMap[]>;
 
-    getOutputsInfo(): Object;
+    getOutputsInfo(): Promise<OutputInfoMap[]>;
 }
