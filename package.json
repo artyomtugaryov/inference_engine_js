@@ -7,7 +7,7 @@
     "url": "git://github.com/artyomtugaryov/inference_engine_js.git"
   },
   "main": "./lib/inference_engine.js",
-  "typings": "lib/index.d.ts",
+  "typings": "./lib/index.d.ts",
   "scripts": {
     "build": "node-gyp rebuild -j 12 --verbose",
     "tsc": "tsc",

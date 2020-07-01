@@ -1,8 +1,9 @@
 import { imread } from 'opencv4nodejs';
 import { size } from 'lodash';
-import { drawBoxInImage, ObjectDetectionPrediction, parseSSDResults, toCHWArray } from "./common";
+import { drawBoxInImage } from "./common";
+import { ObjectDetectionPrediction } from "../lib";
 
-const { Core } = require('../lib/inference_engine');
+const { Core, preProcessing, postProcessing } = require('../lib/inference_engine');
 
 async function main() {
 
@@ -48,7 +49,7 @@ async function main() {
         const inputBlob = inferRequest.getBlob(inputLayerName);
         const dims = inputBlob.getDims();
         const image = sourceImage.resize(dims[2], dims[3]);
-        const data = toCHWArray(image);
+        const data = preProcessing.toCHWArray(image);
         inputBlob.fillWithU8(data);
     }
 
@@ -61,7 +62,7 @@ async function main() {
     const outputBlob = inferRequest.getBlob(outputLayerName);
 
     const outData: number[] = outputBlob.data();
-    const boxes: ObjectDetectionPrediction[] = parseSSDResults(outData, outputBlob.getDims());
+    const boxes = postProcessing.parseSSDResults(outData, outputBlob.getDims());
 
 
     boxes.forEach((box: ObjectDetectionPrediction) => {
