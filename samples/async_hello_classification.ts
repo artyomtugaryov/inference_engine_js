@@ -1,8 +1,9 @@
 import { imread } from 'opencv4nodejs';
 import { size } from 'lodash';
 import { printClassificationResult } from './common';
-import {CNNNetwork, ExecutableNetwork, InferRequest, InputInfo, InputInfoMap, OutputInfoMap } from "../lib";
 
+// TODO: Need to import typing and functionality from lib
+import {CNNNetwork, ExecutableNetwork, InferRequest, InputInfo, InputInfoMap, OutputInfoMap } from '../lib';
 const { Core, preProcessing, postProcessing } = require('../lib/inference_engine');
 
 async function completionCallback(network: CNNNetwork, inferRequest: InferRequest) {
@@ -66,7 +67,6 @@ async function main() {
     inferRequest.startAsync();
 
     console.log("End of main");
-
 }
 
 main().then(() => console.log("End of the script"));
