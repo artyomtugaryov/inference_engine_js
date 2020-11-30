@@ -1,5 +1,7 @@
 # OpenVINO Inference Engine Node API addon (InferenceEngineJS)
 
+**WARNING:** There is [the main repository](https://github.com/intel/inference-engine-node) in an Intel organization. All development moved to the main repository. This repo was archived as duplicate.
+
 ## Prerequisites
 1. Installed [OpenVINO](https://github.com/opencv/dldt) package
 2. [Node v12](https://nodejs.org/dist/latest-v12.x/)
