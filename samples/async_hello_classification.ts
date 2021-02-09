@@ -1,26 +1,24 @@
-import {imread} from 'opencv4nodejs';
-import {size} from 'lodash';
-import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
-import {CNNNetwork, ExecutableNetwork, InferRequest, InputInfo, InputInfoMap} from "../lib";
-import {OutputInfoMap} from "../lib/typings/output_info";
+import { imread } from 'opencv4nodejs';
+import { size } from 'lodash';
+import { printClassificationResult } from './common';
 
-const {Core} = require('../lib/inference_engine');
+// TODO: Need to import typing and functionality from lib
+import {CNNNetwork, ExecutableNetwork, InferRequest, InputInfo, InputInfoMap, OutputInfoMap } from '../lib';
+const { Core, preProcessing, postProcessing } = require('../lib/inference_engine');
 
 async function completionCallback(network: CNNNetwork, inferRequest: InferRequest) {
     network.getOutputsInfo().then((outputInfoMap: OutputInfoMap[]) => {
-        outputInfoMap.forEach((outputInfoMap: OutputInfoMap, index: number) => {
+        outputInfoMap.forEach((outputInfoMap: OutputInfoMap, _: number) => {
             const outputLayerName = outputInfoMap.name
             const outputBlob = inferRequest.getBlob(outputLayerName);
             const inferenceResults = outputBlob.data();
-            const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
-
+            const classificationResults = postProcessing.parseClassificationResults(inferenceResults, outputBlob.getDims());
             classificationResults.forEach((inferResultForImage: number[]) => {
                 printClassificationResult(inferResultForImage);
             })
         })
     });
 }
-
 
 async function main() {
     if (!process.env.MODEL_PATH) {
@@ -43,7 +41,7 @@ async function main() {
         if (size(inputInfoMap) > 1) {
             throw Error('Sample supports topologies with 1 input only');
         }
-        inputInfoMap.forEach((inputInfoMap: InputInfoMap, index: number) => {
+        inputInfoMap.forEach((inputInfoMap: InputInfoMap, _: number) => {
             const inputLayer: InputInfo = inputInfoMap.value;
             inputLayer.setPrecision('U8');
             inputLayer.setLayout('NCHW');
@@ -59,7 +57,7 @@ async function main() {
     const inputBlob = inferRequest.getBlob(inputLayerName);
     const dims = inputBlob.getDims();
     const image = sourceImage.resize(dims[2], dims[3]);
-    const data = toCHWArray(image);
+    const data = preProcessing.toCHWArray(image);
     inputBlob.fillWithU8(data);
 
     await inferRequest.setCompletionCallback(async () => {
@@ -69,7 +67,6 @@ async function main() {
     inferRequest.startAsync();
 
     console.log("End of main");
-
 }
 
 main().then(() => console.log("End of the script"));

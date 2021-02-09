@@ -1,9 +1,9 @@
-import {imread} from 'opencv4nodejs';
-import {size} from 'lodash';
-import {toCHWArray, printClassificationResult, parseClassificationResults} from './common';
-import {OutputInfoMap} from "../lib/typings/output_info";
+import { imread } from 'opencv4nodejs';
+import { size } from 'lodash';
+import { printClassificationResult } from './common';
+import { OutputInfoMap } from "../lib";
 
-const {Core} = require('../lib/inference_engine');
+const { Core, preProcessing, postProcessing } = require('../lib/inference_engine');
 
 async function main() {
     if (!process.env.MODEL_PATH) {
@@ -46,7 +46,7 @@ async function main() {
         const inputBlob = inferRequest.getBlob(inputLayerName);
         const dims = inputBlob.getDims();
         const image = sourceImage.resize(dims[2], dims[3]);
-        const data = toCHWArray(image);
+        const data = preProcessing.toCHWArray(image);
         inputBlob.fillWithU8(data);
     }
 
@@ -57,8 +57,7 @@ async function main() {
             const outputLayerName = outputInfoMap.name
             const outputBlob = inferRequest.getBlob(outputLayerName);
             const inferenceResults = outputBlob.data();
-            const classificationResults = parseClassificationResults(inferenceResults, outputBlob.getDims());
-
+            const classificationResults = postProcessing.parseClassificationResults(inferenceResults, outputBlob.getDims());
             classificationResults.forEach((inferResultForImage: number[]) => {
                 printClassificationResult(inferResultForImage);
             })
@@ -66,6 +65,4 @@ async function main() {
     });
 }
 
-main();
-
-console.log('Done');
+main().then(() => console.log('Done'));
